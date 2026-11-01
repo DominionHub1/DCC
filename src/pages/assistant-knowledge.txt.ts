@@ -1,7 +1,7 @@
-// Everything the website assistant knows, built from the same data as the website.
-// Published at /assistant-knowledge.txt on every build (including the daily rebuild), and read by
-// the assistant server in assistant/ — so the assistant is never out of step with the site.
-// Links are written as site paths (e.g. /events); the assistant turns them into full links.
+// All the church's key information on one plain-text page, built from the same data as the website.
+// Published at /assistant-knowledge.txt on every build (including the daily rebuild), so it is always
+// current. Use it to teach a chatbot (e.g. Brevo's AI assistant) about the church: give it this page's
+// link, or copy and paste its text. Links are written as full addresses on the church's domain (site.json → url).
 import type { APIRoute } from 'astro';
 import { getCollection } from 'astro:content';
 import site from '../data/site.json';
@@ -145,6 +145,8 @@ export const GET: APIRoute = async () => {
     'Online forms: ' + formPages.map(([path, name, label]) => `${label} at ${path}${jotformUrl(name) ? '' : ' (not switched on yet — email or phone instead)'}`).join('; ') + '.',
   ));
 
-  const body = `# ${site.name} — website information\nGenerated ${fmt.date(now)}.\n\n${out.join('\n\n')}\n`;
+  const text = `# ${site.name} — website information\nGenerated ${fmt.date(now)}.\n\n${out.join('\n\n')}\n`;
+  // Site paths (/events, /new-here#plan-your-visit) become full links, so they work wherever the text is used.
+  const body = text.replace(/(^|[\s(])\/(?=[a-z#?]|$)/gm, `$1${site.url.replace(/\/+$/, '')}/`);
   return new Response(body, { headers: { 'Content-Type': 'text/plain; charset=utf-8' } });
 };

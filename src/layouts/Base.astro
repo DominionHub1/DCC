@@ -3,7 +3,6 @@ import '../styles/global.css';
 import site from '../data/site.json';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
-import Assistant from '../components/Assistant.astro';
 import { getCollection } from 'astro:content';
 import { ukTime } from '../lib/schedule';
 
@@ -69,6 +68,19 @@ const jsonLd = {
   <link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet" />
   <script is:inline>document.documentElement.classList.add('js');</script>
   <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+  {site.chat.brevoConversationsId && (
+    <script is:inline define:vars={{ brevoId: site.chat.brevoConversationsId }}>
+      // Brevo Conversations: live chat and AI assistant (settings in site.json → chat).
+      (function (d, w, c) {
+        w.BrevoConversationsID = brevoId;
+        w[c] = w[c] || function () { (w[c].q = w[c].q || []).push(arguments); };
+        var s = d.createElement('script');
+        s.async = true;
+        s.src = 'https://conversations-widget.brevo.com/brevo-conversations.js';
+        if (d.head) d.head.appendChild(s);
+      })(document, window, 'BrevoConversations');
+    </script>
+  )}
   <slot name="head" />
 </head>
 <body>
@@ -84,7 +96,6 @@ const jsonLd = {
     <slot />
   </main>
   <Footer />
-  {site.assistant.endpoint && <Assistant />}
   <script>import '../scripts/site.ts';</script>
 </body>
 </html>

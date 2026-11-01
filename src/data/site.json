@@ -57,9 +57,9 @@
     ]
   },
 
-  "assistant": {
-    "_comment": "Website chat assistant (the server is in assistant/). Paste the assistant's address here once it is deployed, e.g. https://dcc-assistant.<your-subdomain>.workers.dev. Leave blank to hide the chat button.",
-    "endpoint": ""
+  "chat": {
+    "_comment": "Live chat and AI assistant by Brevo Conversations. The ID comes from Brevo → Conversations → Settings → Chat widget → installation code (BrevoConversationsID). Leave blank to hide the chat button.",
+    "brevoConversationsId": "6ae73adc89140a74e6031799"
   },
 
   "forms": {
