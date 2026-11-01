@@ -28,6 +28,7 @@ const newsletter = jotformUrl('newsletter');
           <button class="btn btn--gold btn--sm" type="submit">Subscribe<span class="sr-only"> (opens in new tab)</span></button>
         </form>
       )}
+      {newsletter && <p class="newsletter-status">Your sign-up opens in a new tab with your email filled in. Press <strong>Submit</strong> there to finish.</p>}
     </div>
     <div class="socials">
       {socials.map((s) => (
