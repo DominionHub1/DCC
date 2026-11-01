@@ -18,22 +18,38 @@ const [latest, ...more] = messages;
     <div class="container">
       <SectionHead id="latest-message" title="Latest Message" intro="Missed a Sunday? Catch up on recent Sunday sermons, or join us live." link={{ href: '/messages', label: 'View all messages' }} />
       <div class="messages-layout reveal">
-        <div class="message-feature">
+        <article class="message-feature" aria-labelledby="latest-message-title">
           <VideoPlayer id={latest.data.youtubeId} title={latest.data.title} />
           <div class="message-feature__body">
-            <span><span class="pill pill--gold">{latest.data.type}</span></span>
-            <h3>{latest.data.title}</h3>
-            {(latest.data.series || latest.data.speaker) && <p class="muted" style="margin:0">{[latest.data.series, latest.data.speaker].filter(Boolean).join(' · ')}</p>}
-            <p class="muted" style="margin:0;display:flex;gap:6px;align-items:center"><Icon name="calendar" size={15} />{fmt.date(new Date(`${latest.data.date}T12:00:00Z`))}</p>
-            <div class="btn-row" style="margin-top:8px">
-              <a class="btn btn--sm" href={`https://www.youtube.com/watch?v=${latest.data.youtubeId}`} target="_blank" rel="noopener">Watch on YouTube <Icon name="external-link" size={15} /></a>
-              <a class="btn btn--outline btn--sm" href={site.social.youtubeLive} target="_blank" rel="noopener"><Icon name="radio" size={15} /> Live services</a>
+            <div class="message-feature__meta">
+              <span class="pill pill--gold">{latest.data.type}</span>
+              <span class="message-feature__date"><Icon name="calendar" size={15} />{fmt.date(new Date(`${latest.data.date}T12:00:00Z`))}</span>
+            </div>
+            <h3 id="latest-message-title">{latest.data.title}</h3>
+            {(latest.data.series || latest.data.speaker) && <p class="message-feature__series">{[latest.data.series, latest.data.speaker].filter(Boolean).join(' · ')}</p>}
+            <div class="message-feature__actions">
+              <a class="btn btn--sm" href={`https://www.youtube.com/watch?v=${latest.data.youtubeId}`} target="_blank" rel="noopener">Watch on YouTube <Icon name="external-link" size={15} /><span class="sr-only"> (opens in new tab)</span></a>
             </div>
           </div>
-        </div>
-        <div class="messages-list">
-          {more.slice(0, 3).map((m) => <MessageMini m={m.data} />)}
-        </div>
+        </article>
+        <aside class="messages-aside" aria-labelledby="recent-services-h">
+          {more.length > 0 && (
+            <>
+              <h3 id="recent-services-h" class="messages-aside__h">More recent services</h3>
+              <div class="messages-list">
+                {more.slice(0, 3).map((m) => <MessageMini m={m.data} />)}
+              </div>
+            </>
+          )}
+          <div class="live-card">
+            <span class="live-card__icon" aria-hidden="true"><Icon name="radio" size={20} /></span>
+            <div>
+              <p class="live-card__title">Watch live on Sundays</p>
+              <p class="live-card__text">Every {site.service.day} at {site.service.time}, streamed on YouTube.</p>
+            </div>
+            <a class="btn btn--gold btn--sm" href={site.social.youtubeLive} target="_blank" rel="noopener">Live services<span class="sr-only"> (opens in new tab)</span></a>
+          </div>
+        </aside>
       </div>
     </div>
   </section>

@@ -926,3 +926,23 @@ img.is-broken { visibility: hidden; }
   /* Centred image heroes: even scrim on phones so text in the background video never clashes with the title */
   .page-hero--image.page-hero--centered::before { background: rgb(7 13 34 / .8); }
 }
+
+/* Homepage Latest Message: video on top of the feature card, recent services and a live card alongside */
+.messages-layout { grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr); align-items: stretch; }
+.message-feature { grid-template-columns: 1fr; align-content: start; }
+.message-feature .yt-embed { border-radius: 0; }
+.message-feature__body { justify-content: flex-start; gap: 8px; padding: clamp(20px, 2.6vw, 28px); }
+.message-feature__meta { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px; }
+.message-feature__date { display: inline-flex; align-items: center; gap: 6px; font-size: .92rem; color: var(--ink-3); }
+.message-feature__series { margin: 0; color: var(--ink-3); }
+.message-feature__actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 8px; }
+.messages-aside { display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+.messages-aside__h { margin: 0; font-size: .78rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--ink-3); }
+.messages-aside .message-mini { grid-template-columns: 132px 1fr; }
+.live-card { margin-top: 6px; display: grid; grid-template-columns: auto 1fr; gap: 12px 14px; align-items: center; padding: 20px; border-radius: var(--radius); background: var(--navy-900); color: #c5cfe6; }
+.live-card__icon { width: 42px; height: 42px; border-radius: 50%; display: grid; place-items: center; background: rgb(245 166 35 / .16); color: var(--gold-400); }
+.live-card__title { margin: 0; font-family: var(--font-head); font-weight: 700; color: var(--white); }
+.live-card__text { margin: 2px 0 0; font-size: .9rem; }
+.live-card .btn { grid-column: 1 / -1; justify-self: start; }
+@media (max-width: 900px) { .messages-layout { grid-template-columns: 1fr; } .live-card { margin-top: 4px; } }
+@media (max-width: 560px) { .messages-aside .message-mini { grid-template-columns: 112px 1fr; } }
