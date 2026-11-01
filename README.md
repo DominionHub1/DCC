@@ -30,6 +30,7 @@ All content is data, separate from the design, so a CMS can be connected later w
 | Testimonies | `src/data/testimonies.json` |
 | Announcement banner | `src/data/announcements.json` |
 | Leadership | `src/data/leaders.json` |
+| Website assistant (AI chat) | `src/data/site.json → assistant`, `assistant/` (see "Website assistant") |
 | Beliefs, story timeline | `src/data/beliefs.json`, `src/data/timeline.json` |
 
 ### Messages from YouTube (automatic)
@@ -84,6 +85,25 @@ The `_sample-*.md` files are preview-only examples: they show on `npm run dev` w
 - Social icons render only for accounts that are filled in. No placeholder links.
 - Announcements show only while `active` and between `starts` and `expires`.
 - Forms are Jotform forms; a form that isn't connected yet shows "email or call us" instead.
+
+## Website assistant (AI chat)
+
+A chat button in the corner of every page lets visitors ask about services, events, ministries, giving, prayer and anything else on the site. Answers come from Claude (Anthropic's AI), using only the church's own information.
+
+- **What it knows:** every build publishes `/assistant-knowledge.txt`, generated from the same data files as the website (`src/pages/assistant-knowledge.txt.ts`): service times, the next 60 days of activities and events, ministries, programmes, sermons, giving, beliefs, leadership and contacts. Update the site and the assistant knows within minutes; the daily rebuild keeps "what's on" current. For anything not on the site, it says it doesn't know and gives the church's contact details.
+- **How it behaves:** `assistant/src/prompt.ts` sets the tone and the care and safety rules. It points to 999, Samaritans and the safeguarding page when needed, and never asks for personal details.
+- **The server:** `assistant/` is a small Cloudflare Worker that holds the Claude API key (a static site can't keep a key secret). It only answers requests from the church's website, limits each visitor to 12 messages a minute, and caches the church information between messages. The model is set by `MODEL` in `assistant/wrangler.toml`.
+
+### Switching it on
+
+1. **Claude API key:** create an account at [platform.claude.com](https://platform.claude.com), add billing (set a monthly spend limit), and create an API key.
+2. **Cloudflare (free plan is enough):** sign up at [dash.cloudflare.com](https://dash.cloudflare.com/sign-up). Note your **Account ID** (Workers & Pages), and create an API token from the **Edit Cloudflare Workers** template (My Profile → API Tokens).
+3. **GitHub secrets:** in this repository go to *Settings → Secrets and variables → Actions* and add `ANTHROPIC_API_KEY`, `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID`.
+4. **Deploy:** *Actions → Deploy website assistant → Run workflow*. The log shows the assistant's address, e.g. `https://dcc-assistant.<name>.workers.dev`.
+5. **Show the chat button:** paste that address into `src/data/site.json → assistant.endpoint` and push. Clear it to hide the button again at any time.
+6. **When the domain moves** to dominionconnections.org, change `SITE_URL` in `assistant/wrangler.toml` to `https://dominionconnections.org` and push.
+
+Test locally: `cd assistant && npm install`, put `ANTHROPIC_API_KEY=...` in `assistant/.dev.vars` (never committed), run `npx wrangler dev`, and set `assistant.endpoint` to `http://localhost:8787` while running `npm run dev`.
 
 ## Going live: checklist
 

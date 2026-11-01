@@ -1,0 +1,23 @@
+# DCC website assistant: a Cloudflare Worker that answers visitors' questions using Claude.
+# Deployed by .github/workflows/deploy-assistant.yml (or `npx wrangler deploy` from this folder).
+# The Claude API key is a secret: set ANTHROPIC_API_KEY as a GitHub secret (or `npx wrangler secret put ANTHROPIC_API_KEY`).
+name = "dcc-assistant"
+main = "src/index.ts"
+compatibility_date = "2026-10-01"
+compatibility_flags = ["nodejs_compat"]
+
+[vars]
+# Where the live website is. The assistant reads SITE_URL/assistant-knowledge.txt and links visitors to pages on it.
+# Change to https://dominionconnections.org once the domain points at the site.
+SITE_URL = "https://dominionhub1.github.io/DCC"
+# Websites allowed to use the assistant (comma-separated). Local preview addresses are allowed separately.
+ALLOWED_ORIGINS = "https://dominionhub1.github.io,https://dominionconnections.org,https://www.dominionconnections.org"
+MODEL = "claude-opus-5-5"
+
+# At most 12 messages per minute from one visitor (protects the API budget from abuse).
+[[ratelimits]]
+name = "CHAT_LIMITER"
+namespace_id = "1001"
+  [ratelimits.simple]
+  limit = 12
+  period = 60

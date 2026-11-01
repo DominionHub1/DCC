@@ -1,0 +1,42 @@
+# Deploys the website chat assistant (assistant/) to Cloudflare Workers.
+# Needs three repository secrets (Settings → Secrets and variables → Actions):
+#   ANTHROPIC_API_KEY      - Claude API key from https://platform.claude.com
+#   CLOUDFLARE_API_TOKEN   - Cloudflare API token made from the "Edit Cloudflare Workers" template
+#   CLOUDFLARE_ACCOUNT_ID  - shown in the Cloudflare dashboard under Workers & Pages
+# Until they are added, this workflow does nothing. Runs when assistant/ changes, or by hand from the Actions tab.
+name: Deploy website assistant
+on:
+  push:
+    branches: [main]
+    paths: ['assistant/**', '.github/workflows/deploy-assistant.yml']
+  workflow_dispatch: {}
+permissions:
+  contents: read
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    env:
+      READY: ${{ secrets.ANTHROPIC_API_KEY != '' && secrets.CLOUDFLARE_API_TOKEN != '' && secrets.CLOUDFLARE_ACCOUNT_ID != '' }}
+    steps:
+      - name: Check secrets
+        if: env.READY != 'true'
+        run: echo "::notice::Skipped - add the ANTHROPIC_API_KEY, CLOUDFLARE_API_TOKEN and CLOUDFLARE_ACCOUNT_ID repository secrets to deploy the assistant."
+      - uses: actions/checkout@v4
+        if: env.READY == 'true'
+      - uses: actions/setup-node@v4
+        if: env.READY == 'true'
+        with: { node-version: 22, cache: npm, cache-dependency-path: assistant/package-lock.json }
+      - name: Install and type-check
+        if: env.READY == 'true'
+        working-directory: assistant
+        run: npm ci && npx tsc --noEmit
+      - name: Deploy
+        if: env.READY == 'true'
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          workingDirectory: assistant
+          secrets: ANTHROPIC_API_KEY
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}

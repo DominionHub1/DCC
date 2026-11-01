@@ -57,6 +57,11 @@
     ]
   },
 
+  "assistant": {
+    "_comment": "Website chat assistant (the server is in assistant/). Paste the assistant's address here once it is deployed, e.g. https://dcc-assistant.<your-subdomain>.workers.dev. Leave blank to hide the chat button.",
+    "endpoint": ""
+  },
+
   "forms": {
     "_comment": "Jotform form for each part of the website. Paste the form's ID (e.g. 251234567890123) or its full link (e.g. https://form.jotform.com/251234567890123; use the full link for EU-hosted forms). Jotform delivers submissions and email notifications. Leave blank and that page shows 'email or call us' instead. The same form can be reused for several entries. See README → Forms for the fields each form needs.",
     "contact": "",

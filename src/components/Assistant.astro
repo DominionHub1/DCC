@@ -1,0 +1,48 @@
+---
+// Website chat assistant: a button in the corner of every page that opens a chat with the DCC assistant.
+// Shown only when site.json → assistant.endpoint is set. Behaviour is in src/scripts/assistant.ts.
+import site from '../data/site.json';
+import Icon from './Icon.astro';
+
+const suggestions = [
+  'What time is the Sunday service?',
+  "I'm new. What should I expect?",
+  "What's on this week?",
+  'How can I give?',
+];
+---
+<div class="assistant" data-assistant data-endpoint={site.assistant.endpoint}>
+  <button class="assistant__launcher" type="button" aria-expanded="false" aria-controls="assistant-panel" data-assistant-open>
+    <Icon name="message-circle" size={22} />
+    <span>Ask DCC</span>
+  </button>
+
+  <section class="assistant__panel" id="assistant-panel" role="dialog" aria-modal="false" aria-labelledby="assistant-title" hidden>
+    <header class="assistant__head">
+      <span class="assistant__avatar" aria-hidden="true"><Icon name="sparkles" size={18} /></span>
+      <div>
+        <h2 id="assistant-title" class="assistant__title">DCC Assistant</h2>
+        <p class="assistant__sub">Ask about services, events, ministries and more</p>
+      </div>
+      <button class="assistant__icon-btn" type="button" data-assistant-reset aria-label="Start a new conversation" title="New conversation"><Icon name="rotate-ccw" size={18} /></button>
+      <button class="assistant__icon-btn" type="button" data-assistant-close aria-label="Close the assistant"><Icon name="x" size={20} /></button>
+    </header>
+
+    <div class="assistant__log" role="log" aria-live="polite" aria-relevant="additions" tabindex="0" data-assistant-log>
+      <div class="assistant__msg assistant__msg--bot">
+        <p>Hello and welcome to {site.name}! I can help with service times, what to expect on your first visit, events, ministries, giving, prayer and more. What would you like to know?</p>
+      </div>
+      <div class="assistant__chips" data-assistant-chips>
+        {suggestions.map((s) => <button type="button" class="assistant__chip" data-assistant-suggest>{s}</button>)}
+      </div>
+    </div>
+
+    <form class="assistant__form" data-assistant-form>
+      <label class="sr-only" for="assistant-input">Your question</label>
+      <textarea id="assistant-input" rows="1" maxlength="1500" placeholder="Type your question…" autocomplete="off" data-assistant-input></textarea>
+      <button class="assistant__send" type="submit" aria-label="Send" data-assistant-send><Icon name="send" size={18} /></button>
+    </form>
+    <p class="assistant__note">AI assistant: answers can contain mistakes. For anything important, please <a href="/contact">contact the church</a>. In an emergency, call 999.</p>
+  </section>
+</div>
+<script>import '../scripts/assistant.ts';</script>
