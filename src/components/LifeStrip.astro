@@ -1,0 +1,26 @@
+---
+import { getCollection } from 'astro:content';
+import SectionHead from './SectionHead.astro';
+import Icon from './Icon.astro';
+const photos = (await getCollection('gallery', ({ data }) => !data.draft)).sort((a, b) => a.data.order - b.data.order);
+const shown = photos.slice(0, 5);
+---
+{shown.length > 0 && (
+  <section class="section" aria-labelledby="life-at-dcc">
+    <div class="container">
+      <SectionHead id="life-at-dcc" title="Life at DCC" intro="Church isn't something we attend. It's a family we belong to." link={{ href: '/life-at-dcc', label: 'View more photos' }} />
+      <div class="life-strip reveal">
+        {shown.map((p, i) => i === shown.length - 1 ? (
+          <div class="more">
+            <img src={p.data.src} alt="" loading="lazy" />
+            <a class="more__overlay" href="/life-at-dcc"><Icon name="image" size={26} />View more<span class="sr-only"> photos of life at DCC</span></a>
+          </div>
+        ) : (
+          <button type="button" data-lightbox={p.data.src} data-alt={p.data.alt} data-caption={p.data.caption} aria-label={`Enlarge photo: ${p.data.alt}`}>
+            <img src={p.data.src} alt="" loading="lazy" />
+          </button>
+        ))}
+      </div>
+    </div>
+  </section>
+)}

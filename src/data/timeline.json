@@ -1,0 +1,7 @@
+[
+  { "id": "2007", "order": 1, "marker": "Nov 2007", "title": "It began with prayer", "text": "RCCG Dominion Christian Connections began in November 2007, after a period of consistent prayer and seeking God's counsel for six months." },
+  { "id": "bull-hotel", "order": 2, "marker": "Bull Hotel", "title": "Humble beginnings", "text": "Our story started humbly, with worship services held in the Banquet Suite of the Bull Hotel in Peterborough." },
+  { "id": "rugged-faith", "order": 3, "marker": "Growth", "icon": "house", "title": "Through rugged faith", "text": "From the Banquet Suite, we moved into our own space through rugged faith. Since then the church has grown from strength to strength into the multicultural, intergenerational family that we are today." },
+  { "id": "passion", "order": 4, "marker": "Vision", "icon": "sprout", "title": "A passion for growth", "text": "Our passion for the spiritual growth and development of the individual is reflected in the vision of the church, and we are committed to making a positive impact in our local and international community." },
+  { "id": "today", "order": 5, "marker": "Today", "icon": "heart", "title": "Still growing", "text": "Today we are still growing rapidly: holding weekly services that empower people, creating a food bank and welfare system, serving free breakfasts for the homeless and the needy, and praying for our community to enable people to dominate in life." }
+]

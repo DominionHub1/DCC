@@ -1,0 +1,54 @@
+{
+  "_comment": "Text for the About page, in DCC's own words. The story chapters live in timeline.json and the beliefs in beliefs.json.",
+  "heroTitle": "Our Story",
+  "heroLead": "Born out of six months of prayer, built on rugged faith, and still growing. This is the story of Dominion Christian Connections.",
+  "storyIntro": "Every church has a beginning. Ours began on our knees.",
+  "storyQuote": "Our journey serves as a constant reminder that God can use the seemingly insignificant to make a difference.",
+  "todayTitle": "Where we are today",
+  "todayIntro": "Today, RCCG Dominion Christian Connections is still growing rapidly, and our faith is lived out in practical ways across Peterborough.",
+  "todayPhotos": [
+    {
+      "src": "/images/today-church-building.jpg",
+      "alt": "The front of the DCC church building at 36–38 Park Road, Peterborough, with the DCC banner and welcome sign",
+      "caption": "Our home on Park Road, Peterborough"
+    },
+    {
+      "src": "/images/today-pastor-congregation.jpg",
+      "alt": "Pastor Samuel Olusegun speaking with members of the congregation during a Sunday service",
+      "caption": "Sunday worship"
+    }
+  ],
+  "todayItems": [
+    {
+      "icon": "church",
+      "title": "Weekly services",
+      "text": "Holding weekly services that empower people.",
+      "href": "/events"
+    },
+    {
+      "icon": "utensils",
+      "title": "Food bank and welfare",
+      "text": "Creating a food bank and welfare system for those in need.",
+      "href": "/ministries/community"
+    },
+    {
+      "icon": "coffee",
+      "title": "Free breakfasts",
+      "text": "Serving free breakfasts for the homeless and the needy.",
+      "href": "/ministries/community/breakfast-morning"
+    },
+    {
+      "icon": "hand-heart",
+      "title": "Prayer for the community",
+      "text": "Praying for our community, to enable people to dominate in life.",
+      "href": "/ministries/community/prayer"
+    }
+  ],
+  "mission": "To reach people with the message of Christ, make disciples and build relationships that foster spiritual growth, as we pursue to make Heaven and take as many people as possible with us. At RCCG Dominion Christian Connections, we place a high emphasis on helping you and your family connect with God and with others.",
+  "vision": "We envision a people of integrity, purpose, power and excellence who would dominate in every aspect of life, with an addiction to the Kingdom of God and its principles.",
+  "visionNote": "This vision is translated into our mission and has shaped our church culture.",
+  "beliefsIntro": "Dominion Christian Connections is a member of the Redeemed Christian Church of God (RCCG), a movement of more than 250,000 believers worldwide. Our church believes that the only truth that brings lasting fulfilment, clear purpose and true joy is God's unconditional love for all, expressed through the sacrificial death and miraculous resurrection of Jesus Christ, who now lives forever and is the spiritual mediator between God and humankind. This is the belief at the heart of the Christian faith, and it is the core message which the RCCG shares worldwide.",
+  "beliefsLinkText": "For the RCCG's full constitution, history, leadership and statement of belief, visit rccguk.church",
+  "closingTitle": "We're convinced the best is yet to come!",
+  "closingText": "Whatever your age, background or culture, we hope you will feel at home with us."
+}

@@ -1,0 +1,9 @@
+---
+// A clearly marked stand-in for content DCC has not yet approved. Never filled with invented text.
+interface Props { label: string; dark?: boolean }
+const { label, dark = false } = Astro.props;
+---
+<div class:list={['placeholder', dark && 'placeholder--dark']} role="note">
+  <span class="placeholder__tag">Placeholder</span>
+  <span>{label}</span>
+</div>

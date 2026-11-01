@@ -1,0 +1,17 @@
+---
+import Icon from './Icon.astro';
+import { fmt } from '../lib/schedule';
+interface Props { m: { youtubeId: string; title: string; type: string; date: string; series?: string } }
+const { m } = Astro.props;
+---
+<a class="message-mini" href={`https://www.youtube.com/watch?v=${m.youtubeId}`} target="_blank" rel="noopener">
+  <div class="thumb">
+    <img src={`https://i.ytimg.com/vi/${m.youtubeId}/mqdefault.jpg`} alt="" loading="lazy" width="320" height="180" />
+    <span class="thumb__play"><span style="width:32px;height:32px"><Icon name="play" size={14} /></span></span>
+  </div>
+  <div>
+    <h3>{m.title}</h3>
+    <small>{m.type} · {fmt.shortDate(new Date(`${m.date}T12:00:00Z`))}</small>
+    <span class="sr-only"> (opens YouTube in a new tab)</span>
+  </div>
+</a>

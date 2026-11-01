@@ -1,0 +1,26 @@
+---
+import Base from '../../layouts/Base.astro';
+import PageHero from '../../components/PageHero.astro';
+import ThemeDetail from '../../components/ThemeDetail.astro';
+import { getCurrentTheme, getPublicThemes } from '../../lib/themes';
+
+// /theme always shows the current Annual Theme (AC-02). Its permanent home is /theme/<entry>.
+const theme = await getCurrentTheme();
+const past = (await getPublicThemes()).filter((t) => t.state === 'past' || t.state === 'archived');
+const t = theme?.entry.data;
+---
+{theme && t ? (
+  <Base title={`${t.year} Theme: ${t.title}`} description={`${t.title}: Dominion Christian Connections' theme for ${t.year}, from ${t.scripture}.`} image={t.artwork.src} canonicalPath={`/theme/${theme.id}`}>
+    <ThemeDetail theme={theme} />
+  </Base>
+) : (
+  <Base title="Annual Theme" description="Dominion Christian Connections' annual theme." noindex>
+    <PageHero title="Our annual theme" lead="Our theme for this year will be shared here soon." crumbs={[]} />
+    {past.length > 0 && (
+      <section class="section"><div class="container">
+        <h2 style="font-size:1.4rem">Previous themes</h2>
+        <ul class="theme-archive">{past.map((p) => <li><a href={p.href}><strong>{p.entry.data.year}</strong> {p.entry.data.title}</a></li>)}</ul>
+      </div></section>
+    )}
+  </Base>
+)}

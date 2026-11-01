@@ -1,0 +1,188 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import Icon from '../components/Icon.astro';
+import SectionHead from '../components/SectionHead.astro';
+import site from '../data/site.json';
+import about from '../data/about.json';
+
+const timeline = (await getCollection('timeline')).sort((a, b) => a.data.order - b.data.order);
+const beliefs = (await getCollection('beliefs')).sort((a, b) => a.data.order - b.data.order);
+const leaders = (await getCollection('leaders', ({ data }) => !data.draft)).sort((a, b) => a.data.order - b.data.order);
+const [lead, ...team] = leaders;
+---
+<Base title="About Us" description="The story of Dominion Christian Connections: begun in prayer in November 2007, now a multicultural, intergenerational RCCG church family in Peterborough. Our mission, vision and what we believe.">
+  <PageHero title={about.heroTitle} eyebrow={`RCCG · Peterborough · Since ${site.founded}`} lead={about.heroLead} image="/images/praise-celebration.jpg" imagePosition="60% 18%" crumbs={[]}>
+    <nav class="btn-row about-jump" aria-label="On this page" style="margin-top:28px">
+      <a class="btn btn--ghost btn--sm" href="#story">Our story</a>
+      <a class="btn btn--ghost btn--sm" href="#mission">Mission &amp; vision</a>
+      <a class="btn btn--ghost btn--sm" href="#beliefs">What we believe</a>
+    </nav>
+  </PageHero>
+
+  <!-- The story -->
+  <section class="section" id="story" aria-labelledby="story-h">
+    <div class="container story">
+      <div class="story__text">
+        <div class="eyebrow">From prayer to purpose</div>
+        <h2 id="story-h">How it all began</h2>
+        <p class="story__lead">{about.storyIntro}</p>
+        <ol class="timeline timeline--story">
+          {timeline.map((t) => (
+            <li class="reveal">
+              <div class="timeline__marker">{t.data.icon ? <Icon name={t.data.icon} size={22} /> : t.data.marker}</div>
+              <div>
+                {t.data.icon && <span class="timeline__label">{t.data.marker}</span>}
+                <h3>{t.data.title}</h3>
+                <p>{t.data.text}</p>
+              </div>
+            </li>
+          ))}
+        </ol>
+      </div>
+      <div class="story__media" aria-hidden="true">
+        <img class="story__img story__img--main" src="/images/dsc_0893.jpg" alt="" loading="lazy" />
+        <img class="story__img story__img--accent" src="/images/dsc_0920.jpg" alt="" loading="lazy" />
+      </div>
+    </div>
+  </section>
+
+  <!-- Pull quote -->
+  <section class="section section--navy section--tight" aria-label="Our journey">
+    <figure class="container story-quote reveal">
+      <Icon name="quote" size={40} />
+      <blockquote>{about.storyQuote}</blockquote>
+    </figure>
+  </section>
+
+  <!-- Today -->
+  <section class="section" aria-labelledby="today-h">
+    <div class="container">
+      <SectionHead id="today-h" title={about.todayTitle} eyebrow="Still growing" intro={about.todayIntro} />
+      <div class:list={['today-photos reveal', about.todayPhotos.length === 2 && 'today-photos--pair']}>
+        {about.todayPhotos.map((p, i) => (
+          <figure class:list={['today-photos__item', i === 0 && 'today-photos__item--main']}>
+            <button type="button" data-lightbox={p.src} data-alt={p.alt} data-caption={p.caption} aria-label={`Enlarge photo: ${p.alt}`}>
+              <img src={p.src} alt={p.alt} loading="lazy" />
+            </button>
+            <figcaption>{p.caption}</figcaption>
+          </figure>
+        ))}
+      </div>
+      <div class="grid grid-4">
+        {about.todayItems.map((item) => (
+          <a class="card give-option reveal" href={item.href}>
+            <div class="icon-tile icon-tile--gold"><Icon name={item.icon} size={24} /></div>
+            <h3 style="margin:0">{item.title}</h3>
+            <p>{item.text}</p>
+            <span class="link-arrow">Find out more <Icon name="arrow-right" size={15} /></span>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Mission & vision -->
+  <section class="section section--sky" id="mission" aria-labelledby="mission-h">
+    <div class="container">
+      <SectionHead id="mission-h" title="Our Mission & Vision" eyebrow="Why we exist" />
+      <div class="mv-grid">
+        <article class="mv-panel reveal">
+          <div class="icon-tile icon-tile--navy"><Icon name="target" size={26} /></div>
+          <h3>Our Mission</h3>
+          <p>{about.mission}</p>
+        </article>
+        <article class="mv-panel mv-panel--dark reveal">
+          <div class="icon-tile icon-tile--gold"><Icon name="eye" size={26} /></div>
+          <h3>Our Vision</h3>
+          <p>{about.vision}</p>
+          <p class="mv-panel__note">{about.visionNote}</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--tight meet-leaders-head" aria-labelledby="meet-leaders-h">
+    <div class="container" style="text-align:center">
+      <div class="eyebrow">Shepherding the family</div>
+      <h2 id="meet-leaders-h">Meet the Leadership</h2>
+      <p class="muted" style="max-width:60ch;margin:0 auto">The men and women who serve, lead and care for the DCC family.</p>
+    </div>
+  </section>
+
+  {lead && (
+    <section class="lead-pastor" id="leadership" aria-labelledby="leaders-h">
+      <div class="lead-pastor__inner">
+        <div class="lead-pastor__photo">
+          <img src={lead.data.featurePhoto ?? lead.data.photo} alt={`${lead.data.name}, ${lead.data.role} of ${site.name}`} loading="lazy" width="582" height="760" />
+        </div>
+        <div class="lead-pastor__text reveal">
+          <span class="lead-pastor__emblem" aria-hidden="true"></span>
+          <span class="lead-pastor__church">Dominion Christian Connections</span>
+          <h2 id="leaders-h">Our {lead.data.role}</h2>
+          <p class="lead-pastor__name">{lead.data.name}</p>
+          {lead.data.bio && <p class="lead-pastor__bio">{lead.data.bio}</p>}
+          {lead.data.cta && <a class="btn btn--outline-light" href={lead.data.cta.href}>{lead.data.cta.label}</a>}
+        </div>
+      </div>
+    </section>
+  )}
+
+  {team.length > 0 && (
+    <section class="section section--sky" aria-labelledby="team-h">
+      <div class="container">
+        <h2 id="team-h" class="team-h">Our leadership team</h2>
+        <div class="team-grid">
+          {team.map((l) => (
+            <article class="team-card">
+              <div class="team-card__photo">
+                {l.data.photo ? <img src={l.data.photo} alt={l.data.name ? `${l.data.name}, ${l.data.role}` : l.data.role} loading="lazy" /> : <Icon name="user-round" size={44} />}
+              </div>
+              <p class="team-card__role">{l.data.role}</p>
+              {l.data.name ? <h3>{l.data.name}</h3> : <h3 class="team-card__tbc">Name to be confirmed</h3>}
+              {l.data.bio && <p class="team-card__bio">{l.data.bio}</p>}
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+
+  <!-- Beliefs -->
+  <section class="section" id="beliefs" aria-labelledby="beliefs-h">
+    <div class="container">
+      <div class="beliefs-intro">
+        <div>
+          <div class="eyebrow">Rooted in Scripture</div>
+          <h2 id="beliefs-h">What We Believe</h2>
+          <p class="muted">{about.beliefsIntro}</p>
+        </div>
+        <div class="beliefs-intro__img"><img src="/images/worship-women.jpg" alt="Women of DCC worshipping with eyes closed, one with her hand raised" loading="lazy" /></div>
+      </div>
+      <div class="belief-cards">
+        {beliefs.map((b) => (
+          <article class="belief-card reveal">
+            <div class="belief-card__head">
+              <span class="icon-tile icon-tile--gold"><Icon name={b.data.icon} size={22} /></span>
+              <h3>{b.data.title}</h3>
+            </div>
+            <p>{b.data.statement}</p>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+
+  <!-- Closing -->
+  <section class="section about-closing-wrap"><div class="container"><div class="about-closing">
+    <div class="container" style="text-align:center;max-width:760px">
+      <Icon name="sparkles" size={34} class="about-closing__icon" />
+      <h2 style="margin-bottom:28px">{about.closingTitle}</h2>
+      <div class="btn-row" style="justify-content:center">
+        <a class="btn btn--gold" href="/new-here#plan-your-visit">Plan Your Visit <Icon name="arrow-right" size={18} /></a>
+      </div>
+    </div>
+  </div></div></section>
+</Base>

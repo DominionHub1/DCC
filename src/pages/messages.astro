@@ -1,0 +1,82 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import VideoPlayer from '../components/VideoPlayer.astro';
+import Icon from '../components/Icon.astro';
+import site from '../data/site.json';
+import { fmt } from '../lib/schedule';
+
+const messages = (await getCollection('messages', ({ data }) => !data.draft)).sort((a, b) => b.data.date.localeCompare(a.data.date));
+// Featured "Latest message" is the most recent Sunday sermon; everything else is in the library below.
+const latest = messages.find((m) => isSundaySermon(m.data));
+const rest = messages.filter((m) => m !== latest);
+const types = [...new Set(messages.map((m) => m.data.type))];
+const d = (s: string) => fmt.shortDate(new Date(`${s}T12:00:00Z`));
+import { isSundaySermon } from '../lib/messages';
+---
+<Base title="Messages" description="Watch recent sermons and services from Dominion Christian Connections, Peterborough, or join our services live on YouTube.">
+  <PageHero title="Watch & Grow" eyebrow="Messages" lead="Catch up on recent services and teaching, or join us live every Sunday and for Word Encounter on Wednesdays at 7:00 PM." crumbs={[]}>
+    <div class="btn-row" style="margin-top:28px">
+      <a class="btn btn--gold" href={site.social.youtubeLive} target="_blank" rel="noopener"><Icon name="radio" size={18} /> Watch live</a>
+      {site.social.spotify && <a class="btn btn--ghost" href={site.social.spotify} target="_blank" rel="noopener"><Icon name="spotify" size={18} /> Worship playlist</a>}
+    </div>
+  </PageHero>
+
+  {latest ? (
+    <>
+      <section class="section section--sky">
+        <div class="container">
+          <div class="message-feature">
+            <VideoPlayer id={latest.data.youtubeId} title={latest.data.title} />
+            <div class="message-feature__body">
+              <span class="eyebrow" style="margin:0">Latest message</span>
+              <h2 style="font-size:clamp(1.5rem,3vw,2rem);margin:0">{latest.data.title}</h2>
+              <p class="muted" style="margin:0">{[latest.data.type, latest.data.series, latest.data.speaker, d(latest.data.date)].filter(Boolean).join(' · ')}</p>
+            </div>
+          </div>
+        </div>
+      </section>
+      <section class="section">
+        <div class="container">
+          <h2>Message library</h2>
+          <div class="tabs" role="group" aria-label="Filter messages" data-msg-filter>
+            <button class="tab" type="button" aria-pressed="true" data-type="">All</button>
+            {types.map((t) => <button class="tab" type="button" aria-pressed="false" data-type={t}>{t}</button>)}
+          </div>
+          <div class="grid grid-3" data-msg-list>
+            {rest.map((m) => (
+              <a class="card" href={`https://www.youtube.com/watch?v=${m.data.youtubeId}`} target="_blank" rel="noopener" data-type={m.data.type}>
+                <div class="card__media thumb" style="border-radius:0">
+                  <img src={`https://i.ytimg.com/vi/${m.data.youtubeId}/hqdefault.jpg`} alt="" loading="lazy" width="480" height="360" />
+                  <span class="thumb__play"><span><Icon name="play" size={18} /></span></span>
+                </div>
+                <div class="card__body">
+                  <span><span class="pill">{m.data.type}</span></span>
+                  <h3>{m.data.title}</h3>
+                  <p>{[m.data.series, m.data.speaker].filter(Boolean).join(' · ')}{(m.data.series || m.data.speaker) ? ' · ' : ''}{d(m.data.date)}</p>
+                  <span class="sr-only">(opens YouTube in a new tab)</span>
+                </div>
+              </a>
+            ))}
+          </div>
+          <p class="muted" style="margin-top:32px">Looking for something older? <a href={site.social.youtube} target="_blank" rel="noopener">Browse every service on our YouTube channel</a>.</p>
+        </div>
+      </section>
+    </>
+  ) : (
+    <section class="section"><div class="container"><div class="empty-state"><p>Messages will appear here soon. In the meantime, visit our <a href={site.social.youtube}>YouTube channel</a>.</p></div></div></section>
+  )}
+</Base>
+
+<script>
+  const bar = document.querySelector<HTMLElement>('[data-msg-filter]');
+  bar?.addEventListener('click', (e) => {
+    const btn = (e.target as HTMLElement).closest<HTMLButtonElement>('[data-type]');
+    if (!btn) return;
+    bar.querySelectorAll('[data-type]').forEach((b) => b.setAttribute('aria-pressed', String(b === btn)));
+    document.querySelectorAll<HTMLElement>('[data-msg-list] > [data-type]').forEach((card) => {
+      card.hidden = !!btn.dataset.type && card.dataset.type !== btn.dataset.type;
+    });
+  });
+</script>

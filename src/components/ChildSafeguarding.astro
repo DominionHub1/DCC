@@ -1,0 +1,87 @@
+---
+import Icon from './Icon.astro';
+import site from '../data/site.json';
+import sg from '../data/safeguarding.json';
+
+// Safeguarding story and team for the Children's Ministry page.
+const journey = [
+  { icon: 'hand', title: 'A warm welcome', text: 'Our children’s team greets you and your child at the door, so you know exactly who will be looking after them.' },
+  { icon: 'clipboard-check', title: 'Signed in', text: 'Every child is signed in by a parent or carer, with any allergies, needs or important details noted.' },
+  { icon: 'shield-check', title: 'Trusted, trained leaders', text: 'Your child learns, plays and worships with leaders who are safely recruited, DBS-checked and safeguarding-trained.' },
+  { icon: 'heart-handshake', title: 'Safely home', text: 'At the end of the service, children are only handed back to the parent or carer who signed them in.' },
+];
+const commitments = [
+  { icon: 'user-check', text: 'Safer recruitment, with DBS checks for everyone who works with children' },
+  { icon: 'graduation-cap', text: 'Regular safeguarding training for leaders and volunteers' },
+  { icon: 'camera-off', text: 'Photos of children are only ever shared with parental consent' },
+  { icon: 'book-open', text: 'We follow the safeguarding policy of the Redeemed Christian Church of God (UK)' },
+  { icon: 'ear', text: 'Every concern is listened to, taken seriously and acted on' },
+];
+const initials = (role: string) => role.split(/\s+/).filter((w) => /^[A-Z]/.test(w)).slice(0, 2).map((w) => w[0]).join('');
+const mail = (e: string) => `mailto:${e || site.contact.email}?subject=${encodeURIComponent('Safeguarding')}`;
+---
+<section class="sg-story" aria-labelledby="sg-h">
+  <div class="container">
+    <div class="sg-story__intro">
+      <span class="sg-story__eyebrow"><Icon name="shield" size={16} /> Safeguarding</span>
+      <h2 id="sg-h">Every child safe, known and loved</h2>
+      <p>When you hand your child to us on a Sunday, you are trusting us with someone precious. We never take that trust lightly. Long before the first song is sung, our team has prepared to make Children’s Church a place where your child is safe, seen and free to discover how much God loves them.</p>
+    </div>
+
+    <h3 class="sg-story__sub">Your child’s Sunday with us</h3>
+    <ol class="sg-journey">
+      {journey.map((j, i) => (
+        <li>
+          <span class="sg-journey__num">{i + 1}</span>
+          <span class="sg-journey__icon"><Icon name={j.icon} size={26} /></span>
+          <h4>{j.title}</h4>
+          <p>{j.text}</p>
+        </li>
+      ))}
+    </ol>
+
+    <div class="sg-commit">
+      <h3>Our promise to every family</h3>
+      <ul>
+        {commitments.map((c) => <li><Icon name={c.icon} size={20} /><span>{c.text}</span></li>)}
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="section sg-team" aria-labelledby="sg-team-h">
+  <div class="container">
+    <div class="section-head" style="justify-content:center;text-align:center">
+      <div>
+        <div class="eyebrow">Here for you</div>
+        <h2 id="sg-team-h">Meet our safeguarding team</h2>
+        <p style="margin-inline:auto">If you ever have a question or a worry about a child’s safety, these are the people to speak to. Every conversation is treated with care and in confidence.</p>
+      </div>
+    </div>
+    <div class="sg-team__grid">
+      {sg.team.map((p) => (
+        <article class="sg-person">
+          <div class="sg-person__photo">
+            {p.photo ? <img src={p.photo} alt={p.name ? `${p.name}, ${p.role}` : p.role} loading="lazy" /> : <span aria-hidden="true">{initials(p.role)}</span>}
+          </div>
+          <p class="sg-person__role">{p.role}</p>
+          {p.name ? <h3>{p.name}</h3> : <h3 class="sg-person__tbc">Name to be confirmed</h3>}
+          <p class="sg-person__about">{p.about}</p>
+          <div class="sg-person__contact">
+            <a href={mail(p.email)}><Icon name="mail" size={15} />{p.email || site.contact.email}</a>
+            <a href={`tel:${p.phone || site.contact.phone}`}><Icon name="phone" size={15} />{p.phone || site.contact.phoneDisplay}</a>
+          </div>
+        </article>
+      ))}
+    </div>
+
+    <div class="sg-concern">
+      <span class="icon-tile icon-tile--gold"><Icon name="triangle-alert" size={22} /></span>
+      <div>
+        <h3>Worried about a child?</h3>
+        <p>Speak to any member of the safeguarding team, or email <a href={mail('')}>{site.contact.email}</a> and mark it “Safeguarding”. <strong>If a child is in immediate danger, call <a href="tel:999">999</a>.</strong> You can also call the NSPCC helpline on <a href="tel:08088005000">0808 800 5000</a>.</p>
+      </div>
+      <a class="btn btn--outline btn--sm" href="/safeguarding">Read our safeguarding policy</a>
+    </div>
+  </div>
+</section>

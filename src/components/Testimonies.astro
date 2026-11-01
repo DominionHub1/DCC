@@ -1,0 +1,23 @@
+---
+import { getCollection } from 'astro:content';
+import SectionHead from './SectionHead.astro';
+import Icon from './Icon.astro';
+// Only approved testimonies with recorded consent are shown; with none, the section is omitted (GAC-09, AC-CL-03.3).
+const items = (await getCollection('testimonies', ({ data }) => data.approved && data.consentRecorded)).slice(0, 3);
+---
+{items.length > 0 && (
+  <section class="section section--sky" aria-labelledby="stories">
+    <div class="container">
+      <SectionHead id="stories" title="Stories of Transformation" intro="Real people. Real stories. A faithful God." />
+      <div class="grid grid-3">
+        {items.map((t) => (
+          <figure class="card testimony reveal">
+            <Icon name="quote" size={28} class="muted" />
+            <blockquote>{t.data.quote}</blockquote>
+            <figcaption>{t.data.name}</figcaption>
+          </figure>
+        ))}
+      </div>
+    </div>
+  </section>
+)}

@@ -1,0 +1,64 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import Icon from '../components/Icon.astro';
+import SectionHead from '../components/SectionHead.astro';
+import site from '../data/site.json';
+
+const { bank, options } = site.giving;
+const rows = [
+  { label: 'Bank', value: bank.bankName, copy: false },
+  { label: 'Account name', value: bank.accountName, copy: true },
+  { label: 'Account number', value: bank.accountNumber, copy: true },
+  { label: 'Sort code', value: bank.sortCode, copy: true },
+];
+---
+<Base title="Give" description="Give to Dominion Christian Connections securely online or by bank transfer. Tithes, offerings, Breakfast Morning and church projects.">
+  <PageHero title="Give" eyebrow="Generosity" lead="Thank you for partnering with us in the work of Christ. Every gift helps us worship, disciple and serve Peterborough." image="/images/praise-celebration.jpg" imagePosition="60% 18%" crumbs={[]} />
+
+  <section class="section">
+    <div class="container">
+      <SectionHead title="Give online" eyebrow="Fast and secure" intro="Choose what you'd like to give towards. You'll be taken to our secure payment page, provided by Stripe, to complete your gift." />
+      <div class="grid grid-5">
+        {options.map((o) => (
+          <div class="card give-option reveal">
+            <div class="icon-tile icon-tile--gold"><Icon name={o.icon} size={24} /></div>
+            <h3 style="margin:0">{o.label}</h3>
+            <p>{o.description}</p>
+            <a class="btn btn--sm" href={o.url} target="_blank" rel="noopener">Give <span class="sr-only">{o.label}</span> <Icon name="external-link" size={14} /></a>
+          </div>
+        ))}
+      </div>
+      <p class="muted" style="margin-top:20px;font-size:.92rem"><Icon name="shield" size={15} /> Payments are processed securely by Stripe. DCC never sees or stores your card details.</p>
+    </div>
+  </section>
+
+  <section class="section section--sky">
+    <div class="container grid grid-2" style="align-items:center">
+      <div>
+        <div class="eyebrow">Bank transfer</div>
+        <h2>Give by bank transfer</h2>
+        <p class="muted">You can also give directly from your bank. Please use the type of gift as your payment reference, for example <strong>Tithe</strong>, <strong>Offering</strong> or <strong>Donation</strong>.</p>
+      </div>
+      <div class="card" style="padding:8px 24px">
+        <dl class="bank" style="margin:0">
+          {rows.map((r) => (
+            <div class="bank__row">
+              <dt>{r.label}</dt>
+              <dd>{r.value}{r.copy && <button class="copy-btn" type="button" data-copy={r.value} data-label={`Copy ${r.label.toLowerCase()}`} aria-label={`Copy ${r.label.toLowerCase()}`}><Icon name="copy" size={16} /></button>}</dd>
+            </div>
+          ))}
+        </dl>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--tight">
+    <div class="container">
+      <div class="notice notice--info">
+        <Icon name="info" size={20} />
+        <p>Questions about giving or Gift Aid? Email <a href={`mailto:${site.contact.email}`}>{site.contact.email}</a>. Giving is a personal act of worship. Please never feel pressured to give.</p>
+      </div>
+    </div>
+  </section>
+</Base>

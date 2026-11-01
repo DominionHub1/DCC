@@ -1,0 +1,40 @@
+---
+import { getCollection } from 'astro:content';
+import SectionHead from './SectionHead.astro';
+import VideoPlayer from './VideoPlayer.astro';
+import MessageMini from './MessageMini.astro';
+import Icon from './Icon.astro';
+import { fmt } from '../lib/schedule';
+import site from '../data/site.json';
+import { isSundaySermon } from '../lib/messages';
+
+// Homepage shows Sunday sermons only (Sunday services and special Sunday services such as Thanksgiving).
+const messages = (await getCollection('messages', ({ data }) => !data.draft && isSundaySermon(data)))
+  .sort((a, b) => b.data.date.localeCompare(a.data.date));
+const [latest, ...more] = messages;
+---
+{latest && (
+  <section class="section section--sky" aria-labelledby="latest-message">
+    <div class="container">
+      <SectionHead id="latest-message" title="Latest Message" intro="Missed a Sunday? Catch up on recent Sunday sermons, or join us live." link={{ href: '/messages', label: 'View all messages' }} />
+      <div class="messages-layout reveal">
+        <div class="message-feature">
+          <VideoPlayer id={latest.data.youtubeId} title={latest.data.title} />
+          <div class="message-feature__body">
+            <span><span class="pill pill--gold">{latest.data.type}</span></span>
+            <h3>{latest.data.title}</h3>
+            {(latest.data.series || latest.data.speaker) && <p class="muted" style="margin:0">{[latest.data.series, latest.data.speaker].filter(Boolean).join(' · ')}</p>}
+            <p class="muted" style="margin:0;display:flex;gap:6px;align-items:center"><Icon name="calendar" size={15} />{fmt.date(new Date(`${latest.data.date}T12:00:00Z`))}</p>
+            <div class="btn-row" style="margin-top:8px">
+              <a class="btn btn--sm" href={`https://www.youtube.com/watch?v=${latest.data.youtubeId}`} target="_blank" rel="noopener">Watch on YouTube <Icon name="external-link" size={15} /></a>
+              <a class="btn btn--outline btn--sm" href={site.social.youtubeLive} target="_blank" rel="noopener"><Icon name="radio" size={15} /> Live services</a>
+            </div>
+          </div>
+        </div>
+        <div class="messages-list">
+          {more.slice(0, 3).map((m) => <MessageMini m={m.data} />)}
+        </div>
+      </div>
+    </div>
+  </section>
+)}

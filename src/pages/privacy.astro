@@ -1,0 +1,27 @@
+---
+import Policy from '../layouts/Policy.astro';
+import site from '../data/site.json';
+---
+<Policy title="Privacy Notice" description="How Dominion Christian Connections collects, uses and protects personal information submitted through this website." updated="October 2026">
+  <h2>Who we are</h2>
+  <p>{site.legalName} (registered charity no. {site.charityNumber}) is the data controller for personal information collected through this website. Contact us at <a href={`mailto:${site.contact.email}`}>{site.contact.email}</a>.</p>
+
+  <h2>What we collect and why</h2>
+  <p>We only ask for the information we need for each purpose:</p>
+  <ul>
+    <li><strong>Visit and next-steps forms:</strong> name and contact details, so our Welcome Team or the relevant ministry can respond.</li>
+    <li><strong>Prayer requests:</strong> your request and, only if you choose, your name and contact details. Requests can be anonymous and are seen only by our authorised prayer team.</li>
+    <li><strong>Support and volunteering forms:</strong> your details and message, shared only with the team that handles that type of enquiry.</li>
+    <li><strong>Newsletter:</strong> your email address, used only to send DCC updates. You can unsubscribe at any time.</li>
+  </ul>
+  <p>Our lawful basis is your consent and, for members and regular contacts, our legitimate interests as a church. Prayer and pastoral information may reveal religious beliefs or health information; we process this as a not-for-profit religious body, only with appropriate safeguards and only for the purpose you gave it.</p>
+
+  <h2>How long we keep it</h2>
+  <p>We keep information only as long as needed for the purpose it was given. Specific retention periods are being set by DCC's trustees and will be published here.</p>
+
+  <h2>Third parties</h2>
+  <p>Online giving is handled by Stripe. Videos are provided by YouTube in privacy-enhanced mode. Sermon videos load only when you choose to play them. Background videos are hosted on this website. We do not sell or share your data for marketing.</p>
+
+  <h2>Your rights</h2>
+  <p>You can ask to access, correct or delete your information, or withdraw consent, by emailing <a href={`mailto:${site.contact.email}`}>{site.contact.email}</a>. You can also complain to the Information Commissioner's Office at <a href="https://ico.org.uk" target="_blank" rel="noopener">ico.org.uk</a>.</p>
+</Policy>
