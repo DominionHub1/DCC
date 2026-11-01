@@ -904,3 +904,25 @@ fieldset.field { border: 0; padding: 0; margin: 0; }
 .hero__facts { display: flex; justify-content: space-between; flex-wrap: wrap; }
 .hero__facts .fact:last-child:not(:first-child) { text-align: right; flex-direction: row-reverse; }
 @media (max-width: 560px) { .hero__facts .fact:last-child:not(:first-child) { text-align: left; flex-direction: row; } }
+
+/* ---------- Polish (November 2026) ---------- */
+/* Form submit: show it is working, and never look clickable while sending */
+.btn[disabled], .btn[aria-busy='true'] { opacity: .7; cursor: progress; pointer-events: none; }
+.newsletter-status:empty { min-height: 0; margin-top: 0; }
+
+/* YouTube thumbnails that fail to load (blocked, removed video) leave the navy tile and play icon, not a broken image */
+img.is-broken { visibility: hidden; }
+
+@media (max-width: 560px) {
+  /* Homepage ministries: two per row on phones instead of five tall cards */
+  .grid-5:has(> .ministry-card) { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+  .grid-5 > .ministry-card:last-child:nth-child(odd) { grid-column: 1 / -1; }
+  .grid-5 > .ministry-card:last-child:nth-child(odd) .card__media { aspect-ratio: 16 / 9; }
+  .ministry-card .card__body { padding: 14px 14px 16px; }
+  .ministry-card h3 { font-size: 1.02rem; }
+  .ministry-card p { font-size: .88rem; }
+  /* Footer: tighten the gap between the newsletter and the social icons */
+  .connect { gap: 20px; }
+  /* Centred image heroes: even scrim on phones so text in the background video never clashes with the title */
+  .page-hero--image.page-hero--centered::before { background: rgb(7 13 34 / .8); }
+}

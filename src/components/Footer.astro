@@ -2,6 +2,7 @@
 import site from '../data/site.json';
 import Icon from './Icon.astro';
 import Brand from './Brand.astro';
+import { formEndpoint, formSubject } from '../lib/forms';
 
 // Only render configured social links — never a placeholder (AC-CL-04.2).
 const socials = [
@@ -17,9 +18,9 @@ const year = new Date().getFullYear();
     <div>
       <h2>Stay Connected</h2>
       <p>Get the latest updates, events and encouragement from DCC.</p>
-      <form class="newsletter" data-form="newsletter" data-endpoint={site.forms.newsletter} novalidate>
+      <form class="newsletter" data-form="newsletter" data-endpoint={formEndpoint('newsletter')} data-subject={formSubject('newsletter')} data-success="Thank you for subscribing! You'll hear from us soon." novalidate>
         <label for="newsletter-email" class="sr-only">Your email address</label>
-        <input id="newsletter-email" name="email" type="email" autocomplete="email" placeholder="Your email address" required />
+        <input id="newsletter-email" name="email" type="email" data-name="your email address" autocomplete="email" placeholder="Your email address" required />
         <input class="honeypot" type="text" name="_gotcha" tabindex="-1" autocomplete="off" aria-hidden="true" />
         <button class="btn btn--gold btn--sm" type="submit">Subscribe</button>
       </form>

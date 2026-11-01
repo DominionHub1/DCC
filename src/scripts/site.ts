@@ -76,6 +76,14 @@ window.addEventListener('scroll', onRevealScroll, { passive: true });
 window.addEventListener('resize', onRevealScroll, { passive: true });
 reveal();
 
+/* ---------- Broken YouTube thumbnails ----------
+   If a thumbnail can't load (removed video, blocked network), hide it so the navy tile and play icon show instead. */
+$$<HTMLImageElement>('img[src*="i.ytimg.com"]').forEach((img) => {
+  const fail = () => img.classList.add('is-broken');
+  if (img.complete && img.naturalWidth === 0) fail();
+  else img.addEventListener('error', fail, { once: true });
+});
+
 /* ---------- Copy to clipboard ---------- */
 $$<HTMLButtonElement>('[data-copy]').forEach((btn) => btn.addEventListener('click', async () => {
   try {
@@ -222,26 +230,63 @@ $$<HTMLFormElement>('form[data-form]').forEach((form) => {
     if (i.getAttribute('aria-invalid') === 'true') fieldError(i, '');
   }));
 
+  let sending = false;
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
+    if (sending) return;
     if (!validate(form)) { setStatus(form, 'error', 'Please check the highlighted fields.', false); return; }
     const endpoint = form.dataset.endpoint;
-    const data = Object.fromEntries(new FormData(form).entries());
-    if (data._gotcha) return; // bot
-    if (anon?.checked) { delete data.name; }
+    const raw = new FormData(form);
+    if (String(raw.get('_gotcha') ?? '')) return; // bot
+    raw.delete('_gotcha');
+    if (anon?.checked) raw.delete('name');
     if (!endpoint) { setStatus(form, 'error', FALLBACK); return; }
+
+    const viaEmail = endpoint.startsWith('https://formsubmit.co/');
+    const body: Record<string, string> = {};
+    raw.forEach((value, key) => {
+      const el = form.elements.namedItem(key) as HTMLInputElement | null;
+      if (el && el.closest?.('[hidden]')) return; // fields hidden by the form (e.g. anonymous prayer) are not sent
+      let v = String(value).trim();
+      if (el?.type === 'checkbox') v = 'Yes';
+      if (!v) return;
+      // Email delivery: use the visible label ("Your name") so the email reads clearly.
+      const label = !viaEmail ? '' : el?.type === 'checkbox'
+        ? el.closest('label')?.textContent?.trim()
+        : el?.id ? document.querySelector(`label[for="${el.id}"]`)?.firstChild?.textContent?.trim() : '';
+      body[label || key] = v;
+    });
+    const email = String(raw.get('email') ?? '').trim();
+    if (viaEmail) {
+      Object.assign(body, { _subject: form.dataset.subject || 'Website form', _template: 'table', _captcha: 'false', 'Sent from': location.href });
+      if (email) body._replyto = email;
+    } else {
+      body._form = form.dataset.form ?? '';
+    }
+
     const btn = $<HTMLButtonElement>('[type="submit"]', form);
+    const label = btn && ($('[data-label]', btn) ?? btn);
+    const original = label?.textContent ?? '';
+    sending = true;
     btn?.setAttribute('disabled', '');
+    btn?.setAttribute('aria-busy', 'true');
+    if (label) label.textContent = 'Sending…';
     try {
-      const res = await fetch(endpoint, { method: 'POST', headers: { 'Content-Type': 'application/json', Accept: 'application/json' }, body: JSON.stringify({ ...data, _form: form.dataset.form }) });
+      const res = await fetch(endpoint, { method: 'POST', headers: { 'Content-Type': 'application/json', Accept: 'application/json' }, body: JSON.stringify(body) });
       if (!res.ok) throw new Error(String(res.status));
+      // Some services answer 200 with { success: "false" } or { ok: false }: only a confirmed send counts (GAC-06/07).
+      const json = await res.json().catch(() => ({}));
+      if (json && (json.success === 'false' || json.success === false || json.ok === false)) throw new Error(json.message || 'rejected');
       form.reset();
       if (identity) identity.hidden = false;
       setStatus(form, 'success', form.dataset.success || 'Thank you — your message has been sent.');
     } catch {
       setStatus(form, 'error', 'Sorry, something went wrong and your message was not sent. Please try again, or email admin@dominionhub.org.uk.');
     } finally {
+      sending = false;
       btn?.removeAttribute('disabled');
+      btn?.removeAttribute('aria-busy');
+      if (label) label.textContent = original;
     }
   });
 });

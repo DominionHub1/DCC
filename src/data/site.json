@@ -58,7 +58,8 @@
   },
 
   "forms": {
-    "_comment": "Each form posts to its own endpoint so enquiries reach the right team (US-ADM-04). Leave blank until the form service is configured — forms then show an honest fallback instead of pretending to send.",
+    "_comment": "Where each form is delivered (US-ADM-04). deliverTo receives every form left blank below, by email via FormSubmit (no account needed; the very first submission sends a one-time activation email to that inbox, which must be confirmed). To route a form to a different team, put that team's email address next to it (e.g. \"prayer\": \"prayer@...\"). To use a form service instead (Formspree etc.), paste its https:// endpoint URL. If deliverTo is empty and a form is blank, the form shows an honest 'email us instead' message.",
+    "deliverTo": "admin@dominionhub.org.uk",
     "contact": "",
     "visit": "",
     "ministry": "",

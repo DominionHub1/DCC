@@ -10,7 +10,9 @@ import about from '../data/about.json';
 const timeline = (await getCollection('timeline')).sort((a, b) => a.data.order - b.data.order);
 const beliefs = (await getCollection('beliefs')).sort((a, b) => a.data.order - b.data.order);
 const leaders = (await getCollection('leaders', ({ data }) => !data.draft)).sort((a, b) => a.data.order - b.data.order);
-const [lead, ...team] = leaders;
+const [lead, ...allTeam] = leaders;
+// Leaders whose names aren't confirmed yet are previewed on the dev server only, never on the live site.
+const team = allTeam.filter((l) => l.data.name || import.meta.env.DEV);
 ---
 <Base title="About Us" description="The story of Dominion Christian Connections: begun in prayer in November 2007, now a multicultural, intergenerational RCCG church family in Peterborough. Our mission, vision and what we believe.">
   <PageHero title={about.heroTitle} eyebrow={`RCCG · Peterborough · Since ${site.founded}`} lead={about.heroLead} image="/images/praise-celebration.jpg" imagePosition="60% 18%" crumbs={[]}>

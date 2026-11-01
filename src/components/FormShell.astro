@@ -1,12 +1,12 @@
 ---
-import site from '../data/site.json';
-interface Props { form: keyof typeof site.forms; submit: string; success: string; privacy?: string }
+import { formEndpoint, formSubject, type FormName } from '../lib/forms';
+interface Props { form: FormName; submit: string; success: string; privacy?: string }
 const { form, submit, success, privacy = 'We only use these details to respond to your enquiry. See our privacy notice.' } = Astro.props;
 ---
-<form class="form" data-form={form} data-endpoint={site.forms[form]} data-success={success} novalidate>
+<form class="form" data-form={form} data-endpoint={formEndpoint(form)} data-subject={formSubject(form)} data-success={success} novalidate>
   <slot />
   <input class="honeypot" type="text" name="_gotcha" tabindex="-1" autocomplete="off" aria-hidden="true" />
   <p class="hint muted" style="margin:0;font-size:.88rem">{privacy} <a href="/privacy">Privacy notice</a>.</p>
-  <div><button class="btn btn--gold" type="submit">{submit}</button></div>
+  <div><button class="btn btn--gold" type="submit"><span data-label>{submit}</span></button></div>
   <div class="form-status" role="status" aria-live="polite" tabindex="-1" data-form-status></div>
 </form>

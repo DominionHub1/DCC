@@ -77,7 +77,7 @@ const faqs = [
             <span><Icon name="calendar" size={20} /><strong>{site.service.name}</strong></span>
             <span><Icon name="clock" size={20} />Every {site.service.day} at {site.service.time}</span>
             {next && <span><Icon name="sparkles" size={20} />Next: {next.title}, {fmt.date(next.start)}</span>}
-            <span><Icon name="radio" size={20} />Can't make it? <a href={site.social.youtubeLive} target="_blank" rel="noopener">Watch live on YouTube</a></span>
+            <span><Icon name="radio" size={20} /><span>Can't make it? <a href={site.social.youtubeLive} target="_blank" rel="noopener">Watch live on YouTube<span class="sr-only"> (opens in new tab)</span></a></span></span>
           </div>
         </div>
         <a class="btn btn--gold" href="#tell-us">Let us know you're coming <Icon name="arrow-right" size={18} /></a>
