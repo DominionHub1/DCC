@@ -1,0 +1,33 @@
+---
+import EventRow from './EventRow.astro';
+import FeatureEvent from './FeatureEvent.astro';
+import SectionHead from './SectionHead.astro';
+import Icon from './Icon.astro';
+import { getUpcoming } from '../lib/schedule';
+
+// The picture card always shows the next gathering. Several candidates are rendered; the browser shows the
+// first that hasn't finished yet, so the card stays correct between daily rebuilds. The featured
+// gathering is left out of the list beside it.
+const upcoming = await getUpcoming({ days: 14 });
+const candidates = upcoming.slice(0, 8);
+const first = candidates[0];
+---
+<section class="section" aria-labelledby="this-week">
+  <div class="container">
+    <SectionHead id="this-week" title="This Week at DCC" intro="Services, classes and gatherings coming up over the next seven days." link={{ href: '/events', label: 'View all events' }} />
+    <div class="week-grid reveal">
+      <div data-feature-group>
+        {candidates.map((o, i) => <FeatureEvent o={o} hidden={i > 0} />)}
+      </div>
+      <div>
+        <div class="week-grid__side" data-list data-window-days="7" data-limit="3">
+          {upcoming.map((o) => <EventRow o={o} skip={o === first} />)}
+        </div>
+        <div class="empty-state" data-empty hidden={upcoming.length > 1}>
+          <Icon name="calendar" size={28} />
+          <p style="margin:0">No other gatherings this week. See all <a href="/events">upcoming events</a>.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,89 @@
+---
+import site from '../data/site.json';
+import Icon from './Icon.astro';
+import Brand from './Brand.astro';
+import { formEndpoint, formSubject } from '../lib/forms';
+
+// Only render configured social links — never a placeholder (AC-CL-04.2).
+const socials = [
+  { key: 'facebook', label: 'Facebook', url: site.social.facebook },
+  { key: 'instagram', label: 'Instagram', url: site.social.instagram },
+  { key: 'youtube', label: 'YouTube', url: site.social.youtube },
+  { key: 'spotify', label: 'Spotify playlist', url: site.social.spotify },
+].filter((s) => s.url);
+const year = new Date().getFullYear();
+---
+<footer class="site-footer">
+  <div class="container connect">
+    <div>
+      <h2>Stay Connected</h2>
+      <p>Get the latest updates, events and encouragement from DCC.</p>
+      <form class="newsletter" data-form="newsletter" data-endpoint={formEndpoint('newsletter')} data-subject={formSubject('newsletter')} data-success="Thank you for subscribing! You'll hear from us soon." novalidate>
+        <label for="newsletter-email" class="sr-only">Your email address</label>
+        <input id="newsletter-email" name="email" type="email" data-name="your email address" autocomplete="email" placeholder="Your email address" required />
+        <input class="honeypot" type="text" name="_gotcha" tabindex="-1" autocomplete="off" aria-hidden="true" />
+        <button class="btn btn--gold btn--sm" type="submit">Subscribe</button>
+      </form>
+      <p class="newsletter-status" role="status" aria-live="polite" data-form-status></p>
+    </div>
+    <div class="socials">
+      {socials.map((s) => (
+        <a href={s.url} target="_blank" rel="noopener" aria-label={`DCC on ${s.label} (opens in new tab)`}><Icon name={s.key} size={20} /></a>
+      ))}
+    </div>
+  </div>
+
+  <div class="container footer-grid">
+    <div class="footer-brand">
+      <Brand />
+      <p>{site.tagline}</p>
+      <p>A parish of the <a href={site.rccgUrl} target="_blank" rel="noopener">Redeemed Christian Church of God (RCCG)</a>.</p>
+    </div>
+    <div>
+      <h3>Discover</h3>
+      <ul>
+        <li><a href="/new-here">New Here</a></li>
+        <li><a href="/about">About Us</a></li>
+        <li><a href="/ministries#four-fs">The Four F's</a></li>
+        <li><a href="/messages">Messages</a></li>
+        <li><a href="/life-at-dcc">Life at DCC</a></li>
+      </ul>
+    </div>
+    <div>
+      <h3>Get Involved</h3>
+      <ul>
+        <li><a href="/new-here#plan-your-visit">Plan Your Visit</a></li>
+        <li><a href="/contact">Contact Us</a></li>
+        <li><a href="/events">Events</a></li>
+        <li><a href="/ministries">Ministries</a></li>
+        <li><a href="/new-here#next-steps">Next Steps</a></li>
+        <li><a href="/give">Give</a></li>
+      </ul>
+    </div>
+    <div>
+      <h3>Community</h3>
+      <ul>
+        <li><a href="/ministries/community/prayer">Prayer Request</a></li>
+        <li><a href="/ministries/community#help">I Want to Help</a></li>
+        <li><a href="/ministries/community/breakfast-morning">Breakfast Morning</a></li>
+      </ul>
+    </div>
+    <div>
+      <h3>Contact Us</h3>
+      <ul class="footer-contact">
+        <li><Icon name="mail" size={16} /><a href={`mailto:${site.contact.email}`}>{site.contact.email}</a></li>
+        <li><Icon name="phone" size={16} /><a href={`tel:${site.contact.phone}`}>{site.contact.phoneDisplay}</a></li>
+        <li><Icon name="map-pin" size={16} /><span>{site.venue.street}<br />{site.venue.city} {site.venue.postcode}<br /><a href={site.venue.mapsUrl} target="_blank" rel="noopener">Get directions →</a></span></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="container footer-bottom">
+    <p style="margin:0">© {year} {site.name}. Registered charity no. {site.charityNumber}.</p>
+    <nav aria-label="Legal">
+      <a href="/privacy">Privacy</a>
+      <a href="/safeguarding">Safeguarding</a>
+      <a href="/cookies">Cookies</a>
+    </nav>
+  </div>
+</footer>

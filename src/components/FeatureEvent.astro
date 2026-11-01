@@ -1,0 +1,59 @@
+---
+import { getImage } from 'astro:assets';
+import Icon from './Icon.astro';
+import { fmt, type Occurrence } from '../lib/schedule';
+import { getCurrentTheme } from '../lib/themes';
+
+interface Props { o: Occurrence; image?: string; imageAlt?: string; hidden?: boolean }
+const { o, image = '/images/dsc_4803.jpg', imageAlt = 'A minister preaching at DCC', hidden = false } = Astro.props;
+
+// "theme" means the current Annual Theme artwork (CMS-managed, so it changes with the year's theme).
+let src = o.image ?? image;
+let alt = o.imageAlt ?? imageAlt;
+let poster = o.poster ?? false;
+if (o.image === 'theme') {
+  const theme = await getCurrentTheme();
+  if (theme) {
+    src = (await getImage({ src: theme.entry.data.artwork, width: 900, format: 'webp' })).src;
+    alt = theme.entry.data.artworkAlt;
+    poster = true;
+  } else {
+    src = image; alt = imageAlt; poster = false;
+  }
+}
+const online = o.online && o.external;
+---
+<article class:list={['feature-event', poster && 'feature-event--poster']} data-feature data-key={o.key} data-expires={o.end.toISOString()} hidden={hidden}>
+  <div class="feature-event__media">
+    {poster && <img class="feature-event__backdrop" src={src} alt="" aria-hidden="true" loading="lazy" />}
+    <img class="feature-event__img" src={src} alt={alt} loading="lazy" decoding="async" />
+    {!poster && (
+      <div class="feature-event__title">
+        <span class="pill pill--gold">{o.category}</span>
+        <h3>{o.title}</h3>
+      </div>
+    )}
+  </div>
+  <div class="feature-event__body">
+    {poster && (
+      <div class="feature-event__heading">
+        <span class="pill pill--gold">{o.category}</span>
+        <h3>{o.title}</h3>
+      </div>
+    )}
+    <p>{o.summary}</p>
+    <div class="meta">
+      <span><Icon name="calendar" size={16} />{fmt.date(o.start)}</span>
+      <span><Icon name="clock" size={16} />{o.hasTime ? fmt.time(o.start) : o.timeLabel}</span>
+      <span><Icon name={o.online ? 'radio' : 'map-pin'} size={16} />{o.location}</span>
+    </div>
+    <div class="btn-row">
+      {online
+        ? <a class="btn btn--gold btn--sm" href={o.href} target="_blank" rel="noopener">Join online <Icon name="external-link" size={15} /></a>
+        : <>
+            {!o.recurring && <a class="btn btn--gold btn--sm" href={o.href}>Event details <Icon name="arrow-right" size={16} /></a>}
+            <a class:list={['btn btn--sm', o.recurring ? 'btn--gold' : 'btn--ghost']} href="/new-here#plan-your-visit">Plan Your Visit{o.recurring && <Icon name="arrow-right" size={16} />}</a>
+          </>}
+    </div>
+  </div>
+</article>

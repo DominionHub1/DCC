@@ -1,0 +1,13 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+---
+<Base title="Page not found" description="Sorry, we couldn't find that page." noindex>
+  <PageHero title="We couldn't find that page" lead="It may have moved, or the link may be out of date. These might help:">
+    <div class="btn-row" style="margin-top:28px">
+      <a class="btn btn--gold" href="/">Go to the homepage</a>
+      <a class="btn btn--ghost" href="/new-here#plan-your-visit">Plan your visit</a>
+      <a class="btn btn--ghost" href="/events">Upcoming events</a>
+    </div>
+  </PageHero>
+</Base>

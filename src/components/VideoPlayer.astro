@@ -1,0 +1,11 @@
+---
+import Icon from './Icon.astro';
+interface Props { id: string; title: string; large?: boolean; vertical?: boolean }
+const { id, title, large = true, vertical = false } = Astro.props;
+// Shorts have a proper vertical poster (oardefault); regular videos use the standard 4:3 thumbnail.
+---
+<button class:list={['yt-embed', 'thumb', large && 'thumb--lg', vertical && 'yt-embed--vertical']} type="button" data-youtube={id} data-title={title} data-vertical={vertical ? '' : undefined} aria-label={`Play video: ${title}`}>
+  <img src={`https://i.ytimg.com/vi/${id}/${vertical ? 'oardefault' : 'hqdefault'}.jpg`} alt="" loading="lazy" width={vertical ? 405 : 480} height={vertical ? 720 : 360} />
+  <span class="thumb__play"><span><Icon name="play" size={large ? 28 : 18} /></span></span>
+</button>
+<noscript><a href={`https://www.youtube.com/watch?v=${id}`}>Watch "{title}" on YouTube</a></noscript>

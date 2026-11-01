@@ -1,0 +1,74 @@
+---
+import { getCollection, getEntry, render } from 'astro:content';
+import Base from '../../../layouts/Base.astro';
+import PageHero from '../../../components/PageHero.astro';
+import Icon from '../../../components/Icon.astro';
+import SectionHead from '../../../components/SectionHead.astro';
+import ProgrammeGrid from '../../../components/ProgrammeGrid.astro';
+import Field from '../../../components/Field.astro';
+import FormShell from '../../../components/FormShell.astro';
+import PrayerBand from '../../../components/PrayerBand.astro';
+import ProgrammeGive from '../../../components/ProgrammeGive.astro';
+
+const ministry = (await getEntry('ministries', 'community'))!;
+const { Content } = await render(ministry);
+const programmes = (await getCollection('programmes', ({ data }) => !data.draft)).sort((a, b) => a.data.order - b.data.order);
+const helpAreas = [...programmes.filter((p) => p.data.volunteering).map((p) => p.data.name), 'Anywhere I am needed'];
+import site from '../../../data/site.json';
+---
+<Base title="Community Ministry" description="DCC's Community Ministry: Breakfast Morning, food support, career development, pastoral care and prayer. How DCC cares for Peterborough, and how you can get support or help." image={ministry.data.image}>
+  <PageHero title="Community Ministry" eyebrow={ministry.data.tagline} lead="Whatever you're going through, you don't have to face it alone. And if you'd like to make a difference, there's a place for you to serve." image="/images/dsc_0920.jpg" video={site.communityVideo} videoPauseControl={false} crumbs={[{ href: '/ministries', label: 'Ministries' }]}>
+    <div class="btn-row" style="margin-top:28px">
+      <a class="btn btn--gold" href="#help">Volunteer</a>
+      <a class="btn btn--ghost" href="#give-breakfast-morning">Give</a>
+    </div>
+  </PageHero>
+
+  <section class="section" aria-labelledby="about-community">
+    <div class="container split" style="align-items:start">
+      <div class="prose">
+        <div class="eyebrow">Our Community Ministry</div>
+        <h2 id="about-community">Faith in action across Peterborough</h2>
+        <Content />
+      </div>
+      <blockquote class="card" style="padding:28px;margin:0;border-left:4px solid var(--gold-500);border-radius:0 var(--radius) var(--radius) 0">
+        <p style="font-family:var(--font-head);font-size:1.25rem;font-weight:700;color:var(--ink);margin:0 0 8px">"Love always protects, always trusts, always hopes, always perseveres."</p>
+        <cite class="muted" style="font-style:normal">1 Corinthians 13:7</cite>
+      </blockquote>
+    </div>
+  </section>
+
+  <section class="section section--cream">
+    <div class="container">
+      <SectionHead title="How we serve" intro="Practical support for members and neighbours across Peterborough." />
+      <ProgrammeGrid />
+    </div>
+  </section>
+
+  {programmes.filter((p) => p.data.give).map((p) => <ProgrammeGive programme={p} />)}
+
+
+  <section class="section" id="help" aria-labelledby="help-h">
+    <div class="container grid grid-2" style="align-items:start">
+      <div>
+        <div class="eyebrow">I want to help</div>
+        <h2 id="help-h">Volunteer with us</h2>
+        <p class="muted">From serving breakfast on a Saturday to sorting food donations or mentoring, there are lots of ways to put love into action. Let us know where you'd like to help.</p>
+        <a class="link-arrow" href="/give">Or support our outreach through giving <Icon name="arrow-right" size={15} /></a>
+      </div>
+      <div class="card form-card">
+        <FormShell form="volunteer" submit="Count me in" success="Thank you for offering to help! Our outreach team will be in touch soon.">
+          <Field id="vol-area" name="area" label="Where would you like to help?" as="select" required preselect="help" options={helpAreas} spokenName="where you'd like to help" />
+          <div class="form-row">
+            <Field id="vol-name" name="name" label="Your name" required autocomplete="name" spokenName="your name" />
+            <Field id="vol-email" name="email" label="Email" type="email" required autocomplete="email" spokenName="your email address" />
+          </div>
+          <Field id="vol-phone" name="phone" label="Phone" type="tel" autocomplete="tel" />
+          <Field id="vol-message" name="message" label="Anything else?" as="textarea" hint="For example, your availability or relevant experience." />
+        </FormShell>
+      </div>
+    </div>
+  </section>
+
+  <PrayerBand />
+</Base>

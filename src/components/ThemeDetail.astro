@@ -1,0 +1,107 @@
+---
+import { Picture } from 'astro:assets';
+import { getCollection, render } from 'astro:content';
+import Icon from './Icon.astro';
+import Placeholder from './Placeholder.astro';
+import MessageMini from './MessageMini.astro';
+import EventRow from './EventRow.astro';
+import { eventToOccurrence, getPublishedEvents } from '../lib/schedule';
+import { getCurrentTheme, getPublicThemes, type Theme } from '../lib/themes';
+
+interface Props { theme: Theme }
+const { theme } = Astro.props;
+const t = theme.entry.data;
+const { Content } = await render(theme.entry);
+const current = await getCurrentTheme();
+// "Current" means the theme actually in use: one replaced early by a newer theme is no longer current (AC-06).
+const isCurrent = current?.id === theme.id;
+const others = (await getPublicThemes()).filter((o) => o.id !== theme.id && o.state !== 'upcoming');
+
+// Related content (AC-04): items explicitly linked to this theme in their `theme` field.
+const sermons = (await getCollection('messages', ({ data }) => !data.draft && data.theme === theme.id))
+  .sort((a, b) => b.data.date.localeCompare(a.data.date));
+const now = new Date();
+const events = (await getPublishedEvents())
+  .filter((e) => e.data.theme === theme.id)
+  .map(eventToOccurrence)
+  .filter((o) => o.end > now)
+  .sort((a, b) => a.start.getTime() - b.start.getTime());
+---
+<section class="theme-hero" aria-labelledby="theme-title">
+  <div class="container theme-hero__grid">
+    <div class="theme-hero__text">
+      <nav aria-label="Breadcrumb">
+        <ol class="breadcrumb"><li><a href="/">Home</a></li><li aria-current="page">{t.year} Theme</li></ol>
+      </nav>
+      {!isCurrent && (
+        <div class="theme-status" role="status">
+          <Icon name="info" size={18} />
+          <span>
+            {theme.state === 'upcoming' && theme.status === 'published' ? `This theme begins on ${theme.from.toLocaleDateString('en-GB', { timeZone: 'Europe/London', day: 'numeric', month: 'long', year: 'numeric' })}.` : `This was DCC's theme for ${t.year}. It is no longer our current theme.`}
+            {current && <> <a href="/theme">See our current theme</a>.</>}
+          </span>
+        </div>
+      )}
+      <span class="annual-theme__year">{isCurrent ? `Our ${t.year} theme` : theme.state === 'upcoming' ? `${t.year} theme (coming soon)` : `${t.year} theme (archived)`}</span>
+      <h1 id="theme-title">{t.title}</h1>
+      <p class="annual-theme__scripture annual-theme__scripture--lg">
+        <Icon name="book-open" size={20} />
+        <span class="sr-only">Scripture: </span>
+        {t.scriptureUrl ? <a href={t.scriptureUrl} target="_blank" rel="noopener">{t.scripture}<span class="sr-only"> (opens in a new tab)</span></a> : t.scripture}
+      </p>
+      {theme.descriptionPending
+        ? <Placeholder dark label="Short church-approved description of the theme, awaiting DCC approval." />
+        : <p class="annual-theme__desc">{t.description}</p>}
+    </div>
+    <div class="annual-theme__art">
+      <Picture src={t.artwork} alt={t.artworkAlt} formats={['avif', 'webp']} widths={[380, 560, 740]} sizes="(max-width: 900px) 92vw, 560px" loading="eager" fetchpriority="high" />
+    </div>
+  </div>
+</section>
+
+<section class="section" aria-labelledby="pastor-message">
+  <div class="container prose" style="max-width:780px">
+    <div class="eyebrow">From our Lead Pastor</div>
+    <h2 id="pastor-message">The pastor's message</h2>
+    {theme.messagePending
+      ? <Placeholder label="The pastor's message on this year's theme will appear here once DCC provides it." />
+      : <Content />}
+  </div>
+</section>
+
+{sermons.length > 0 && (
+  <section class="section section--sky" aria-labelledby="theme-sermons">
+    <div class="container">
+      <div class="section-head">
+        <div><div class="eyebrow">Watch &amp; grow</div><h2 id="theme-sermons">Sermons on this theme</h2></div>
+        <a class="link-arrow" href="/messages">All messages <Icon name="arrow-right" size={16} /></a>
+      </div>
+      <div class="grid grid-2">{sermons.map((m) => <MessageMini m={m.data} />)}</div>
+    </div>
+  </section>
+)}
+
+{events.length > 0 && (
+  <section class="section" aria-labelledby="theme-events">
+    <div class="container" style="max-width:980px">
+      <div class="section-head">
+        <div><div class="eyebrow">Get involved</div><h2 id="theme-events">Events for this theme</h2></div>
+        <a class="link-arrow" href="/events">All events <Icon name="arrow-right" size={16} /></a>
+      </div>
+      <div class="grid" data-list>{events.map((o) => <EventRow o={o} />)}</div>
+    </div>
+  </section>
+)}
+
+{others.length > 0 && (
+  <section class="section section--tight section--cream" aria-labelledby="other-themes">
+    <div class="container">
+      <h2 id="other-themes" style="font-size:1.4rem">{isCurrent ? 'Previous themes' : 'Other themes'}</h2>
+      <ul class="theme-archive">
+        {others.map((o) => (
+          <li><a href={o.href}><strong>{o.entry.data.year}</strong> {o.entry.data.title}</a>{o.id === current?.id && <span class="pill pill--gold">Current</span>}</li>
+        ))}
+      </ul>
+    </div>
+  </section>
+)}

@@ -1,0 +1,88 @@
+---
+import '../styles/global.css';
+import site from '../data/site.json';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import { getCollection } from 'astro:content';
+import { ukTime } from '../lib/schedule';
+
+interface Props {
+  title: string;
+  description: string;
+  image?: string;
+  noindex?: boolean;
+  /** Use when the same content is served at more than one URL (e.g. /theme and /theme/<entry>). */
+  canonicalPath?: string;
+}
+const { title, description, image = '/images/dsc_4658.jpg', noindex = false, canonicalPath } = Astro.props;
+const fullTitle = Astro.url.pathname === '/' ? `${site.name} | Church in Peterborough` : `${title} | ${site.name}`;
+const canonical = new URL(canonicalPath ?? Astro.url.pathname, Astro.site);
+const ogImage = new URL(image, Astro.site);
+
+// Announcement banner: active, started, not expired (US-ADM-05). Expiry is re-checked in the browser.
+const now = new Date();
+const announcement = (await getCollection('announcements')).map((a) => a.data).find((a) =>
+  a.active && (!a.starts || ukTime(a.starts) <= now) && (!a.expires || ukTime(a.expires) > now));
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Church',
+  name: site.name,
+  alternateName: site.shortName,
+  url: site.url,
+  logo: new URL('/images/logo.png', Astro.site).href,
+  image: ogImage.href,
+  email: site.contact.email,
+  telephone: site.contact.phone,
+  address: {
+    '@type': 'PostalAddress',
+    streetAddress: site.venue.street,
+    addressLocality: site.venue.city,
+    addressRegion: site.venue.county,
+    postalCode: site.venue.postcode,
+    addressCountry: 'GB',
+  },
+  sameAs: Object.entries(site.social).filter(([k, v]) => v && k !== 'youtubeLive').map(([, v]) => v),
+};
+---
+<!doctype html>
+<html lang="en-GB">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{fullTitle}</title>
+  <meta name="description" content={description} />
+  <link rel="canonical" href={canonical} />
+  {noindex && <meta name="robots" content="noindex" />}
+  <meta name="theme-color" content="#0b1530" />
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content={site.name} />
+  <meta property="og:title" content={fullTitle} />
+  <meta property="og:description" content={description} />
+  <meta property="og:image" content={ogImage} />
+  <meta property="og:url" content={canonical} />
+  <meta name="twitter:card" content="summary_large_image" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet" />
+  <script is:inline>document.documentElement.classList.add('js');</script>
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+  <slot name="head" />
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  {announcement && (
+    <div class="announcement" role="region" aria-label="Announcement" data-expires={announcement.expires ? ukTime(announcement.expires).toISOString() : undefined}>
+      {announcement.message}{' '}
+      {announcement.link && <a href={announcement.link}>{announcement.linkText ?? 'Find out more'}</a>}
+    </div>
+  )}
+  <Header />
+  <main id="main" tabindex="-1">
+    <slot />
+  </main>
+  <Footer />
+  <script>import '../scripts/site.ts';</script>
+</body>
+</html>

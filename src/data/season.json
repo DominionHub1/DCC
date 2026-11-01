@@ -1,0 +1,31 @@
+{
+  "_comment": "The Events page (/events): month chapters (DCC in October...). Change the dates, months and wording for each season.",
+  "title": "Winter at DCC",
+  "heroTitle": "Upcoming Events",
+  "heroLead": "Join us this winter for inspiring events filled with fellowship, faith and opportunities to grow together.",
+  "sectionTitle": "Our Events",
+  "sectionSubtitle": "October to December 2026",
+  "intro": "Join us for a refreshing time in His presence where we share the undiluted word of God that has the power to transform our lives.",
+  "start": "2026-10-01",
+  "end": "2026-12-31",
+  "image": "/images/fellowship-joy.jpg",
+  "months": [
+    {
+      "month": "2026-10",
+      "name": "October",
+      "theme": "Flight by Light",
+      "image": "/images/flight-by-light-october.jpg",
+      "imageAlt": "Welcome to October: Flight by Light. Arise, shine: for your light has come (Isaiah 60:1), with Pastor Samuel Olusegun"
+    },
+    {
+      "month": "2026-11",
+      "name": "November",
+      "theme": "Celebration of Light"
+    },
+    {
+      "month": "2026-12",
+      "name": "December",
+      "theme": "Be the Light"
+    }
+  ]
+}

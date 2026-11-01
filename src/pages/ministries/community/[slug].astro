@@ -1,0 +1,49 @@
+---
+import { getCollection, render } from 'astro:content';
+import Base from '../../../layouts/Base.astro';
+import PageHero from '../../../components/PageHero.astro';
+import Icon from '../../../components/Icon.astro';
+import site from '../../../data/site.json';
+import EmergencyNotice from '../../../components/EmergencyNotice.astro';
+import ProgrammeGive from '../../../components/ProgrammeGive.astro';
+
+export async function getStaticPaths() {
+  const programmes = await getCollection('programmes', ({ data }) => !data.draft);
+  return programmes.map((p) => ({ params: { slug: p.id }, props: { p, all: programmes } }));
+}
+const { p, all } = Astro.props;
+const { Content } = await render(p);
+const others = all.filter((o) => o.id !== p.id).sort((a, b) => a.data.order - b.data.order);
+const contactHref = `mailto:${site.contact.email}?subject=${encodeURIComponent(p.data.name)}`;
+const helpHref = `/ministries/community?help=${encodeURIComponent(p.data.name)}#help`;
+---
+<Base title={p.data.name} description={`${p.data.name} at Dominion Christian Connections, Peterborough. ${p.data.summary}`} image={p.data.image}>
+  <PageHero title={p.data.name} eyebrow="Community Ministry" lead={p.data.summary} image={p.data.image} crumbs={[{ href: '/ministries', label: 'Ministries' }, { href: '/ministries/community', label: 'Community' }]} />
+  <section class="section">
+    <div class="container split" style="align-items:start">
+      <div class="prose">
+        <Content />
+        {p.data.supportCategory === 'Pastoral Care' && <EmergencyNotice />}
+      </div>
+      <aside class="card" style="padding:24px" aria-label="How to get involved">
+        <div class="meta" style="font-size:1rem;gap:12px">
+          {p.data.when && <span><Icon name="clock" size={18} />{p.data.when}</span>}
+          {p.data.access && <span><Icon name="info" size={18} />{p.data.access}</span>}
+        </div>
+        <div class="btn-row" style="margin-top:20px;flex-direction:column">
+          <a class="btn btn--gold btn--block" href={contactHref}><Icon name="mail" size={16} /> Get in touch</a>
+          {p.data.volunteering && <a class="btn btn--outline btn--block" href={helpHref}>I want to help</a>}
+          {p.data.donateUrl && <a class="btn btn--outline btn--block" href={p.data.donateUrl} target="_blank" rel="noopener">Donate <Icon name="external-link" size={15} /></a>}
+        </div>
+      </aside>
+    </div>
+  </section>
+  <ProgrammeGive programme={p} />
+
+  <section class="section section--sky section--tight">
+    <div class="container btn-row">
+      {others.map((o) => <a class="tab" href={`/ministries/community/${o.id}`}>{o.data.name}</a>)}
+      <a class="tab" href="/ministries/community/prayer">Prayer Request</a>
+    </div>
+  </section>
+</Base>

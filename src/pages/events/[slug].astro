@@ -1,0 +1,67 @@
+---
+import { render } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import PageHero from '../../components/PageHero.astro';
+import Icon from '../../components/Icon.astro';
+import site from '../../data/site.json';
+import { getPublishedEvents, eventToOccurrence, fmt } from '../../lib/schedule';
+
+export async function getStaticPaths() {
+  const events = await getPublishedEvents();
+  return events.map((e) => ({ params: { slug: e.id }, props: { e } }));
+}
+const { e } = Astro.props;
+const o = eventToOccurrence(e);
+const { Content } = await render(e);
+const venueKnown = !/to be confirmed/i.test(o.location);
+const mapsUrl = o.online || !venueKnown ? undefined : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(o.location)}`;
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Event',
+  name: o.title,
+  description: o.summary,
+  startDate: o.start.toISOString(),
+  endDate: o.end.toISOString(),
+  eventAttendanceMode: o.online ? 'https://schema.org/OnlineEventAttendanceMode' : 'https://schema.org/OfflineEventAttendanceMode',
+  location: o.online ? { '@type': 'VirtualLocation', url: site.social.youtubeLive } : { '@type': 'Place', name: o.location, address: o.location },
+  organizer: { '@type': 'Organization', name: site.name, url: site.url },
+};
+---
+<Base title={o.title} description={o.summary} image={o.image}>
+  <script type="application/ld+json" slot="head" set:html={JSON.stringify(jsonLd)} />
+  <PageHero title={o.title} eyebrow={o.category} lead={o.summary} image={o.poster ? undefined : o.image} crumbs={[{ href: '/events', label: 'Events' }]} />
+  <section class="section">
+    <div class="container split" style="align-items:start">
+      <div class="prose">
+        <div class="notice" data-expires={o.end.toISOString()} hidden>
+          <Icon name="info" size={20} /><p>This event has now finished.</p>
+        </div>
+        {o.poster && o.image && <img class="event-poster" src={o.image} alt={o.imageAlt ?? ''} />}
+        <Content />
+      </div>
+      <aside class="card" style="padding:24px" aria-label="Event details">
+        <div class="meta" style="font-size:1rem;gap:12px">
+          <span><Icon name="calendar" size={18} />{fmt.date(o.start)}</span>
+          <span><Icon name="clock" size={18} />{o.hasTime ? `${fmt.time(o.start)} – ${fmt.time(o.end)}` : o.timeLabel}</span>
+          {o.audience && <span><Icon name="users" size={18} />{o.audience}</span>}
+          <span><Icon name={o.online ? 'radio' : 'map-pin'} size={18} />{o.location}</span>
+        </div>
+        <div class="btn-row" style="margin-top:20px;flex-direction:column">
+          {o.registrationUrl && <a class="btn btn--gold btn--block" href={o.registrationUrl} target="_blank" rel="noopener">Register <Icon name="external-link" size={16} /></a>}
+          {o.hasTime && <button class="btn btn--outline btn--block" type="button" data-ics data-uid={o.key} data-title={o.title} data-start={o.start.toISOString()} data-end={o.end.toISOString()} data-location={o.location} data-description={o.summary}><Icon name="calendar-plus" size={16} /> Add to calendar</button>}
+          {mapsUrl && <a class="btn btn--outline btn--block" href={mapsUrl} target="_blank" rel="noopener"><Icon name="navigation" size={16} /> Get directions</a>}
+        </div>
+        {!o.registrationUrl && !o.audience && <p class="muted" style="margin:16px 0 0;font-size:.9rem">No registration needed. Just come along.</p>}
+      </aside>
+    </div>
+  </section>
+</Base>
+
+<script>
+  // Show the "finished" notice once the event has ended (the [data-expires] rule hides; here we invert it).
+  document.querySelectorAll<HTMLElement>('.notice[data-expires]').forEach((n) => {
+    n.hidden = Date.parse(n.dataset.expires!) > Date.now();
+    n.classList.remove('is-past');
+  });
+</script>

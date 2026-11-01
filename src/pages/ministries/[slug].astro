@@ -1,0 +1,58 @@
+---
+import { getCollection, render } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import PageHero from '../../components/PageHero.astro';
+import Field from '../../components/Field.astro';
+import FormShell from '../../components/FormShell.astro';
+import ChildSafeguarding from '../../components/ChildSafeguarding.astro';
+
+export async function getStaticPaths() {
+  const ministries = await getCollection('ministries', ({ data }) => !data.draft);
+  return ministries.filter((m) => m.id !== 'community').map((m) => ({ params: { slug: m.id }, props: { m, all: ministries } }));
+}
+const { m, all } = Astro.props;
+const { Content } = await render(m);
+const others = all.filter((o) => o.id !== m.id).sort((a, b) => a.data.order - b.data.order);
+---
+<Base title={`${m.data.name} Ministry`} description={`${m.data.name} Ministry at Dominion Christian Connections, Peterborough. ${m.data.summary}`} image={m.data.image}>
+  <PageHero title={`${m.data.name} Ministry`} eyebrow={m.data.tagline} lead={m.data.summary} image={m.data.image} crumbs={[{ href: '/ministries', label: 'Ministries' }]} />
+
+  <section class="section">
+    <div class="container split" style="align-items:start">
+      <div class="prose">
+        <Content />
+        {m.data.meets && <p><strong>When we meet:</strong> {m.data.meets}</p>}
+        {m.data.verse && (
+          <blockquote class="card" style="padding:24px;margin:28px 0 0;border-left:4px solid var(--gold-500);border-radius:0 var(--radius) var(--radius) 0">
+            <p style="font-family:var(--font-head);font-size:1.15rem;font-weight:600;color:var(--ink);margin:0 0 6px">"{m.data.verse.text}"</p>
+            <cite class="muted" style="font-style:normal">{m.data.verse.ref}</cite>
+          </blockquote>
+        )}
+      </div>
+      {m.data.enquiries && (
+        <div class="card form-card" id="get-connected">
+          <h2 style="font-size:1.5rem">Get connected</h2>
+          <p class="muted">Send a message to the {m.data.name} Ministry team and they'll be in touch.</p>
+          <FormShell form="ministry" submit="Send message" success={`Thank you! Your message has been passed to the ${m.data.name} Ministry team.`}>
+            <input type="hidden" name="ministry" value={m.data.name} />
+            <Field id="min-name" name="name" label="Your name" required autocomplete="name" spokenName="your name" />
+            <Field id="min-email" name="email" label="Email" type="email" required autocomplete="email" spokenName="your email address" />
+            <Field id="min-phone" name="phone" label="Phone" type="tel" autocomplete="tel" />
+            <Field id="min-message" name="message" label="Message" as="textarea" required spokenName="a message" />
+          </FormShell>
+        </div>
+      )}
+    </div>
+  </section>
+
+  {m.id === 'children' && <ChildSafeguarding />}
+
+  <section class="section section--sky section--tight">
+    <div class="container">
+      <h2 style="font-size:1.5rem">Other ministries</h2>
+      <div class="btn-row">
+        {others.map((o) => <a class="tab" href={`/ministries/${o.id}`}>{o.data.name}</a>)}
+      </div>
+    </div>
+  </section>
+</Base>

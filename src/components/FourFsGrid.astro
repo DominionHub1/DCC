@@ -1,0 +1,36 @@
+---
+import { getCollection } from 'astro:content';
+import Icon from './Icon.astro';
+// Four F's cards with photo headers. `links`: show the related-page links (Ministries page).
+interface Props { links?: Record<string, { href: string; label: string }[]> }
+const { links } = Astro.props;
+const fours = (await getCollection('fours', ({ data }) => !data.draft)).sort((a, b) => a.data.order - b.data.order);
+---
+<div class="fours-grid">
+  {fours.map((f) => (
+    <article class:list={['f-card f-card--wide reveal', f.data.image && 'f-card--photo']} id={f.id}>
+      {f.data.image ? (
+        <div class="f-card__photo">
+          <img src={f.data.image} alt={f.data.imageAlt ?? ''} loading="lazy" />
+          <div class="f-card__photo-text">
+            <h3>{f.data.name}</h3>
+          </div>
+          {f.data.imageCredit && <small class="f-card__credit">{f.data.imageCredit}</small>}
+        </div>
+      ) : (
+        <div class="f-card__head">
+          <div class="icon-tile icon-tile--gold"><Icon name={f.data.icon} size={24} /></div>
+          <div><h3>{f.data.name}</h3></div>
+        </div>
+      )}
+      <p><strong style="color:var(--ink)">{f.data.tagline}</strong></p>
+      <p>{f.data.summary}</p>
+      <ul aria-label={`${f.data.name} focus areas`}>{f.data.areas.map((a) => <li>{a}</li>)}</ul>
+      {links?.[f.id] && (
+        <div class="f-card__links">
+          {links[f.id].map((r) => <a class="link-arrow" href={r.href}>{r.label}<Icon name="arrow-right" size={15} /></a>)}
+        </div>
+      )}
+    </article>
+  ))}
+</div>

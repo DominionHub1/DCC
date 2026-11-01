@@ -1,0 +1,50 @@
+---
+import { Picture } from 'astro:assets';
+import Icon from './Icon.astro';
+import Placeholder from './Placeholder.astro';
+import { getCurrentTheme } from '../lib/themes';
+
+// Annual Theme section (US-DIS-06 AC-01). Renders nothing when no theme is current.
+// `minimal`: artwork, year, title and scripture only (no description or button).
+// `joined`: sits directly under a navy page header and continues it seamlessly.
+interface Props { minimal?: boolean; joined?: boolean }
+const { minimal = false, joined = false } = Astro.props;
+const theme = await getCurrentTheme();
+const t = theme?.entry.data;
+---
+{theme && t && (
+  <section class:list={['annual-theme', joined && 'annual-theme--joined', minimal && 'annual-theme--minimal']} aria-labelledby="annual-theme-h" data-expires={theme.until.toISOString()}>
+    <div class="container annual-theme__grid">
+      <div class="annual-theme__art">
+        <Picture
+          src={t.artwork}
+          alt={t.artworkAlt}
+          formats={['avif', 'webp']}
+          widths={[380, 560, 740]}
+          sizes="(max-width: 900px) 92vw, 560px"
+          loading="lazy"
+          decoding="async"
+        />
+      </div>
+      <div class="annual-theme__text">
+        <span class="annual-theme__year">{t.year} Annual Theme</span>
+        <h2 id="annual-theme-h">{t.title}</h2>
+        <p class="annual-theme__scripture">
+          <Icon name="book-open" size={18} />
+          <span class="sr-only">Scripture: </span>
+          {t.scriptureUrl
+            ? <a href={t.scriptureUrl} target="_blank" rel="noopener">{t.scripture}<span class="sr-only"> (opens in a new tab)</span></a>
+            : t.scripture}
+        </p>
+        {!minimal && (theme.descriptionPending
+          ? <Placeholder dark label="Short church-approved description of the theme, awaiting DCC approval." />
+          : <p class="annual-theme__desc">{t.description}</p>)}
+        {!minimal && (
+          <div class="btn-row">
+            <a class="btn btn--gold" href="/theme">Explore Our Theme <Icon name="arrow-right" size={18} /></a>
+          </div>
+        )}
+      </div>
+    </div>
+  </section>
+)}

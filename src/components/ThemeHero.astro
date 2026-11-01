@@ -1,0 +1,30 @@
+---
+import { getImage } from 'astro:assets';
+import { getCurrentTheme } from '../lib/themes';
+
+// Page hero using the current Annual Theme artwork as its background. The artwork stays crisp and
+// unobscured on the right (it carries its own lettering and the pastor's portrait) and fades into the
+// church navy on the left, where the page title sits. A blurred copy fills the rest of the banner.
+interface Props { title: string; eyebrow?: string; lead?: string }
+const { title, eyebrow, lead } = Astro.props;
+const theme = await getCurrentTheme();
+const t = theme?.entry.data;
+const art = t ? await getImage({ src: t.artwork, width: 1200, format: 'webp' }) : undefined;
+const blur = t ? await getImage({ src: t.artwork, width: 400, format: 'webp' }) : undefined;
+---
+<section class="theme-hero-bg" aria-labelledby="page-title">
+  {art && blur && t && (
+    <div class="theme-hero-bg__media" aria-hidden="true">
+      <img class="theme-hero-bg__blur" src={blur.src} alt="" />
+      <img class="theme-hero-bg__art" src={art.src} alt="" fetchpriority="high" width={art.attributes.width} height={art.attributes.height} />
+    </div>
+  )}
+  <div class="container theme-hero-bg__inner">
+    <div class="theme-hero-bg__text">
+      {eyebrow && <div class="eyebrow">{eyebrow}</div>}
+      <h1 id="page-title">{title}</h1>
+      {lead && <p class="theme-hero-bg__lead">{lead}</p>}
+      {t && <span class="sr-only">Background: {t.artworkAlt}</span>}
+    </div>
+  </div>
+</section>

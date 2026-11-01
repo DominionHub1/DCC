@@ -1,0 +1,54 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import Icon from './Icon.astro';
+import VideoPlayer from './VideoPlayer.astro';
+import site from '../data/site.json';
+
+// "Give towards <programme>" section: online giving (Stripe), bank transfer with the right reference,
+// a volunteer link and, optionally, the programme's video.
+interface Props { programme: CollectionEntry<'programmes'>; showVideo?: boolean; tone?: 'navy' | 'light' }
+const { programme, showVideo = true, tone = 'navy' } = Astro.props;
+const p = programme.data;
+const bank = site.giving.bank;
+const rows = [
+  { label: 'Account name', value: bank.accountName },
+  { label: 'Account number', value: bank.accountNumber },
+  { label: 'Sort code', value: bank.sortCode },
+  { label: 'Reference', value: p.give?.reference ?? '' },
+];
+const withVideo = showVideo && !!p.video;
+const id = `give-${programme.id}`;
+---
+{p.give && p.donateUrl && (
+  <section class:list={['section programme-give', `programme-give--${tone}`]} aria-labelledby={id}>
+    <div class:list={['container', withVideo ? 'programme-give__grid' : 'programme-give__solo']}>
+      {withVideo && (
+        <div class="programme-give__video">
+          <VideoPlayer id={p.video!.youtubeId} title={p.video!.title} vertical={p.video!.vertical} />
+        </div>
+      )}
+      <div class="programme-give__body">
+        <div class="eyebrow"><Icon name="heart" size={15} /> Make a difference</div>
+        <h2 id={id}>Give towards {p.name}</h2>
+        <p class="programme-give__text">{p.give.text}</p>
+        {p.when && <p class="programme-give__when"><Icon name="clock" size={17} /> {p.when}</p>}
+        <div class="btn-row">
+          <a class="btn btn--gold" href={p.donateUrl} target="_blank" rel="noopener">Give online <Icon name="external-link" size={16} /><span class="sr-only"> to {p.name} (secure Stripe page, opens in a new tab)</span></a>
+          {p.volunteering && <a class:list={['btn', tone === 'navy' ? 'btn--ghost' : 'btn--outline']} href={`/ministries/community?help=${encodeURIComponent(p.name)}#help`}>Volunteer</a>}
+        </div>
+        <details class="programme-give__bank">
+          <summary><Icon name="landmark" size={17} /> Prefer bank transfer?<Icon name="chevron-down" size={16} class="chev" /></summary>
+          <dl>
+            {rows.map((r) => (
+              <div>
+                <dt>{r.label}</dt>
+                <dd>{r.value}<button class="copy-btn" type="button" data-copy={r.value} data-label={`Copy ${r.label.toLowerCase()}`} aria-label={`Copy ${r.label.toLowerCase()}`}><Icon name="copy" size={14} /></button></dd>
+              </div>
+            ))}
+          </dl>
+          <p>{bank.bankName}. Please use <strong>{p.give.reference}</strong> as the reference so your gift goes to {p.name}.</p>
+        </details>
+      </div>
+    </div>
+  </section>
+)}

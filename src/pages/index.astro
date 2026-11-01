@@ -1,0 +1,119 @@
+---
+import Base from '../layouts/Base.astro';
+import Icon from '../components/Icon.astro';
+import SectionHead from '../components/SectionHead.astro';
+import ThisWeek from '../components/ThisWeek.astro';
+import LatestMessage from '../components/LatestMessage.astro';
+import MinistryGrid from '../components/MinistryGrid.astro';
+import FourFsGrid from '../components/FourFsGrid.astro';
+import ProgrammeGrid from '../components/ProgrammeGrid.astro';
+import Testimonies from '../components/Testimonies.astro';
+import PrayerBand from '../components/PrayerBand.astro';
+import LifeStrip from '../components/LifeStrip.astro';
+import site from '../data/site.json';
+import about from '../data/about.json';
+import HeroVideo from '../components/HeroVideo.astro';
+
+// The church vision (single source: about.json), with its key phrase highlighted in the hero.
+const visionPhrase = 'dominate in every aspect of life';
+const [visionBefore, visionAfter = ''] = about.vision.split(visionPhrase);
+const visionHasPhrase = about.vision.includes(visionPhrase);
+
+const quickLinks = [
+  { href: '/new-here#service', icon: 'clock', label: 'Service time' },
+  { href: '/new-here#location', icon: 'car', label: 'Location & parking' },
+  { href: '/new-here#expect', icon: 'users', label: 'What to expect' },
+  { href: '/ministries/children', icon: 'baby', label: "Children's church" },
+  { href: '/new-here#accessibility', icon: 'accessibility', label: 'Accessibility' },
+];
+---
+<Base title="Home" description="Dominion Christian Connections (RCCG) is a welcoming, multicultural church in Peterborough. Join us on Sundays at 10:05 AM for worship, the Word, prayer and family.">
+  <!-- Hero -->
+  <section class="hero hero--centered" aria-labelledby="hero-title">
+    <div class="hero__bg">
+      <img src="/images/dsc_4658.jpg" alt="" fetchpriority="high" width="1600" height="1066" />
+    </div>
+    <HeroVideo video={site.heroVideo} pauseControl={false} />
+    <div class="container">
+      <div class="hero__inner">
+        <p class="hero__vision-badge" id="vision-label"><span class="hero__vision-dot" aria-hidden="true"></span>Our Vision</p>
+        <h1 id="hero-title" class="sr-only">Dominion Christian Connections, Peterborough</h1>
+        <figure class="hero__vision hero__vision--display" aria-labelledby="vision-label">
+          <blockquote>
+            {visionHasPhrase ? (
+              <p>
+                <span class="hv-lead">{visionBefore.trim()}</span>
+                <span class="hv-big">{visionPhrase}</span>
+                <span class="hv-tail">{visionAfter.replace(/^,\s*/, '')}</span>
+              </p>
+            ) : <p>{about.vision}</p>}
+          </blockquote>
+        </figure>
+        <div class="btn-row">
+          <a class="btn btn--gold" href="/messages">Watch Online</a>
+          <a class="btn btn--ghost" href="/new-here">Plan Your Visit</a>
+        </div>
+      </div>
+      <div class="hero__facts">
+        <div class="fact"><Icon name="calendar" size={26} /><div><strong>{site.service.day} Service</strong><span>{site.service.time}</span></div></div>
+        <div class="fact"><Icon name="map-pin" size={26} /><div><strong>{site.venue.street}, {site.venue.city}</strong><a href={site.venue.mapsUrl} target="_blank" rel="noopener">Get Directions <Icon name="arrow-right" size={14} /></a></div></div>
+      </div>
+    </div>
+  </section>
+
+
+  <ThisWeek />
+
+  <LatestMessage />
+
+  <!-- Ministries -->
+  <section class="section section--cream" aria-labelledby="ministries">
+    <div class="container">
+      <SectionHead id="ministries" title="Our Ministries" intro="Find your place, use your gifts and grow together." link={{ href: '/ministries', label: 'View all ministries' }} />
+      <MinistryGrid />
+    </div>
+  </section>
+
+  <!-- Ministry focus: the Four F's -->
+  <section class="section" aria-labelledby="four-fs">
+    <div class="container">
+      <SectionHead id="four-fs" eyebrow="Our ministry focus" title="The Four F's" intro="We believe faith should transform every area of life. These are the four areas DCC is believing God to impact in the life of every member." link={{ href: '/ministries#four-fs', label: "Learn more about the Four F's" }} />
+      <FourFsGrid />
+    </div>
+  </section>
+
+  <!-- Love beyond our walls -->
+  <section class="section" aria-labelledby="beyond">
+    <div class="container">
+      <SectionHead id="beyond" title="Love Beyond Our Walls" intro="The love of Christ should be experienced beyond Sunday services, so we serve Peterborough in practical ways." link={{ href: '/ministries/community', label: 'Get involved' }} />
+      <ProgrammeGrid />
+    </div>
+  </section>
+
+  <Testimonies />
+
+  <PrayerBand />
+
+  <LifeStrip />
+
+  <!-- New here / Plan your visit -->
+  <section class="section section--tight new-here" aria-labelledby="new-here">
+    <div class="container">
+      <div class="new-here__panel reveal">
+        <div class="new-here__top">
+          <div class="new-here__img"><img src="/images/welcome-speaker.jpg" alt="A smiling member of DCC speaking at the front of the church" loading="lazy" /></div>
+          <div>
+            <h2 id="new-here">New Here?</h2>
+            <p>Your first visit shouldn't feel unfamiliar. Here's everything you need to know before Sunday.</p>
+          </div>
+          <div class="btn-row">
+            <a class="btn" href="/new-here#plan-your-visit">Plan Your Visit <Icon name="arrow-right" size={18} /></a>
+          </div>
+        </div>
+        <nav class="quick-links" aria-label="Visitor information">
+          {quickLinks.map((q) => <a href={q.href}><Icon name={q.icon} size={28} />{q.label}</a>)}
+        </nav>
+      </div>
+    </div>
+  </section>
+</Base>

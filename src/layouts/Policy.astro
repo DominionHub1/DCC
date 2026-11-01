@@ -1,0 +1,19 @@
+---
+import Base from './Base.astro';
+import PageHero from '../components/PageHero.astro';
+import Icon from '../components/Icon.astro';
+interface Props { title: string; description: string; updated: string }
+const { title, description, updated } = Astro.props;
+---
+<Base title={title} description={description}>
+  <PageHero title={title} lead={`Last updated ${updated}`} crumbs={[]} />
+  <section class="section">
+    <div class="container prose">
+      <div class="notice" style="margin-bottom:28px">
+        <Icon name="info" size={20} />
+        <p><strong>Draft for approval.</strong> This page needs review and approval by DCC's trustees before the site goes live.</p>
+      </div>
+      <slot />
+    </div>
+  </section>
+</Base>

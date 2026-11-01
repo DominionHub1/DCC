@@ -1,0 +1,15 @@
+---
+import Base from '../../layouts/Base.astro';
+import ThemeDetail from '../../components/ThemeDetail.astro';
+import { getPublicThemes } from '../../lib/themes';
+
+// A permanent page for every published or archived theme (drafts get no page).
+export async function getStaticPaths() {
+  return (await getPublicThemes()).map((theme) => ({ params: { slug: theme.id }, props: { theme } }));
+}
+const { theme } = Astro.props;
+const t = theme.entry.data;
+---
+<Base title={`${t.year} Theme: ${t.title}`} description={`${t.title}: Dominion Christian Connections' theme for ${t.year}, from ${t.scripture}.`} image={t.artwork.src}>
+  <ThemeDetail theme={theme} />
+</Base>

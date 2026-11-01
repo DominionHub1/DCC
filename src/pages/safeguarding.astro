@@ -1,0 +1,17 @@
+---
+import Policy from '../layouts/Policy.astro';
+import site from '../data/site.json';
+---
+<Policy title="Safeguarding" description="Dominion Christian Connections' commitment to the safety and wellbeing of children and adults at risk." updated="October 2026">
+  <h2>Our commitment</h2>
+  <p>Dominion Christian Connections is committed to the safety and wellbeing of every child, young person and adult who takes part in church life. We follow the safeguarding policy and procedures of the Redeemed Christian Church of God (UK) and UK law and guidance.</p>
+  <ul>
+    <li>Everyone working with children or adults at risk is carefully recruited, and DBS-checked where required.</li>
+    <li>Volunteers receive safeguarding training appropriate to their role.</li>
+    <li>Photos of children are only published with consent and in line with our policy.</li>
+  </ul>
+
+  <h2>Raising a concern</h2>
+  <p>If you are worried about the safety or wellbeing of a child or adult in connection with DCC, please speak to our Safeguarding Lead or email <a href={`mailto:${site.contact.email}`}>{site.contact.email}</a>.</p>
+  <p><strong>If someone is in immediate danger, call <a href="tel:999">999</a>.</strong> You can also contact Peterborough City Council's safeguarding team, or the NSPCC helpline on <a href="tel:08088005000">0808 800 5000</a>.</p>
+</Policy>

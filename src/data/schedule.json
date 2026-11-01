@@ -1,0 +1,96 @@
+[
+  {
+    "id": "sunday-service",
+    "title": "Sunday Celebration Service",
+    "summary": "Worship, the Word, prayer and fellowship. Children's church runs alongside the main service.",
+    "category": "Worship",
+    "day": "Sunday",
+    "time": "10:05",
+    "durationMins": 120,
+    "location": "36–38 Park Road, Peterborough",
+    "link": "/new-here#plan-your-visit",
+    "featured": true,
+    "monthlyImages": [
+      {
+        "month": "2026-10",
+        "image": "/images/flight-by-light-october.jpg",
+        "imageAlt": "Welcome to October: Flight by Light. \"Arise, shine: for your light has come\" (Isaiah 60:1), with Pastor Samuel Olusegun",
+        "poster": true
+      }
+    ]
+  },
+  {
+    "id": "thanksgiving-service",
+    "title": "Thanksgiving Service",
+    "summary": "On the first Sunday of every month we gather to give thanks for God's faithfulness. Come ready to celebrate.",
+    "category": "Worship",
+    "day": "Sunday",
+    "weekOfMonth": 1,
+    "time": "10:05",
+    "durationMins": 120,
+    "location": "36–38 Park Road, Peterborough",
+    "link": "/new-here#plan-your-visit",
+    "replaces": "sunday-service",
+    "featured": true,
+    "monthlyImages": [
+      {
+        "month": "2026-10",
+        "image": "/images/flight-by-light-october.jpg",
+        "imageAlt": "Welcome to October: Flight by Light. \"Arise, shine: for your light has come\" (Isaiah 60:1), with Pastor Samuel Olusegun",
+        "poster": true
+      }
+    ]
+  },
+  {
+    "id": "discipleship-class",
+    "title": "Word Encounter",
+    "summary": "Our Wednesday service at 7:00 PM: midweek teaching to help you grow deeper in your walk with God. Join live on YouTube.",
+    "category": "Teaching",
+    "day": "Wednesday",
+    "location": "Online",
+    "online": true,
+    "link": "https://www.youtube.com/@dominionchristianconnections/streams",
+    "time": "19:00",
+    "image": "theme",
+    "poster": true
+  },
+  {
+    "id": "prayer-meeting",
+    "title": "Shiloh Hour",
+    "summary": "Our Friday service at 7:00 PM: a time of prayer together for our church, our families and Peterborough. Everyone is welcome.",
+    "category": "Prayer",
+    "day": "Friday",
+    "time": "19:00",
+    "durationMins": 120,
+    "location": "36–38 Park Road, Peterborough",
+    "link": "/new-here#plan-your-visit",
+    "image": "theme",
+    "poster": true
+  },
+  {
+    "id": "evangelism",
+    "title": "Saturday Evangelism",
+    "summary": "Join the team as we go out into Peterborough to share the good news of Jesus. We meet at the church at 11:00 AM.",
+    "category": "Outreach",
+    "day": "Saturday",
+    "time": "11:00",
+    "durationMins": 120,
+    "location": "Meet at the church, 36–38 Park Road",
+    "link": "/ministries/community#help",
+    "image": "theme",
+    "poster": true
+  },
+  {
+    "id": "breakfast-morning",
+    "title": "Breakfast Morning",
+    "summary": "A free, warm breakfast every Saturday from 8:00 to 10:00 AM for anyone in need, served with dignity and kindness.",
+    "category": "Outreach",
+    "day": "Saturday",
+    "location": "36–38 Park Road, Peterborough",
+    "link": "/ministries/community/breakfast-morning",
+    "image": "/images/dsc_0920.jpg",
+    "imageAlt": "Volunteers serving a hot breakfast at Breakfast Morning",
+    "time": "08:00",
+    "durationMins": 120
+  }
+]

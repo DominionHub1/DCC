@@ -1,0 +1,29 @@
+---
+import * as lucide from 'lucide-static';
+
+interface Props { name: string; size?: number; class?: string; label?: string }
+const { name, size = 20, class: cls = '', label } = Astro.props;
+
+// Lucide dropped brand logos, so the few we need are drawn here in the same stroke style.
+const brands: Record<string, string> = {
+  youtube: '<rect x="2" y="5" width="20" height="14" rx="4"/><path d="m10 9 5 3-5 3z" fill="currentColor"/>',
+  instagram: '<rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="0.6" fill="currentColor"/>',
+  facebook: '<path d="M15 3h-2.5A3.5 3.5 0 0 0 9 6.5V10H6.5v3.5H9V21h3.5v-7.5H15l.5-3.5h-3V7a1 1 0 0 1 1-1H15z"/>',
+  spotify: '<circle cx="12" cy="12" r="9.5"/><path d="M7.5 9.5c3-1 6.5-.7 9 .8M8 12.7c2.4-.7 5-.5 7 .7M8.6 15.6c1.9-.5 3.7-.3 5.2.5"/>',
+};
+
+const pascal = name.replace(/(^|-)([a-z0-9])/g, (_, __, c) => c.toUpperCase());
+const a11y = label ? `role="img" aria-label="${label}"` : 'aria-hidden="true"';
+let svg: string;
+if (brands[name]) {
+  svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon ${cls}" ${a11y}>${brands[name]}</svg>`;
+} else {
+  const src = (lucide as Record<string, string>)[pascal];
+  if (!src) throw new Error(`Unknown icon: ${name}`);
+  svg = src
+    .replace(/width="24"/, `width="${size}"`)
+    .replace(/height="24"/, `height="${size}"`)
+    .replace(/class="[^"]*"/, `class="icon ${cls}" ${a11y}`);
+}
+---
+<Fragment set:html={svg} />

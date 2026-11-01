@@ -1,0 +1,8 @@
+{
+  "_comment": "Safeguarding team shown on the Children's Ministry page. Fill in name/email/phone/photo when DCC confirms them; empty names show 'To be confirmed'. Photos go in public/images/.",
+  "team": [
+    { "role": "Designated Safeguarding Lead", "about": "Leads safeguarding across DCC and is the first point of contact for any concern.", "name": "", "email": "", "phone": "", "photo": "" },
+    { "role": "Deputy Safeguarding Lead", "about": "Supports the Safeguarding Lead and steps in whenever they are unavailable.", "name": "", "email": "", "phone": "", "photo": "" },
+    { "role": "Children's Ministry Lead", "about": "Oversees Children's Church each Sunday and the team who serve there.", "name": "", "email": "", "phone": "", "photo": "" }
+  ]
+}

@@ -1,0 +1,55 @@
+[
+  {
+    "id": "samuel-olusegun",
+    "name": "Pastor Samuel Olusegun",
+    "role": "Lead Pastor",
+    "order": 1,
+    "photo": "/images/pastor-samuel-olusegun-portrait.jpg",
+    "featurePhoto": "/images/pastor-samuel-olusegun-portrait.jpg",
+    "bio": "Pastor Samuel Olusegun is the Lead Pastor of RCCG Dominion Christian Connections in Peterborough. He shepherds a multicultural, intergenerational church family with a passion for the spiritual growth and development of every individual, and a heart to reach people with the message of Christ, make disciples and serve the community.",
+    "cta": {
+      "label": "Hear him preach",
+      "href": "/messages"
+    }
+  },
+  {
+    "id": "tbc-2",
+    "name": "",
+    "role": "Children's Ministry Lead",
+    "order": 2,
+    "photo": "",
+    "bio": ""
+  },
+  {
+    "id": "tbc-3",
+    "name": "",
+    "role": "Youth Ministry Lead",
+    "order": 3,
+    "photo": "",
+    "bio": ""
+  },
+  {
+    "id": "tbc-4",
+    "name": "",
+    "role": "Men's Ministry Lead",
+    "order": 4,
+    "photo": "",
+    "bio": ""
+  },
+  {
+    "id": "tbc-5",
+    "name": "",
+    "role": "Women's Ministry Lead",
+    "order": 5,
+    "photo": "",
+    "bio": ""
+  },
+  {
+    "id": "tbc-6",
+    "name": "",
+    "role": "Community Ministry Lead",
+    "order": 6,
+    "photo": "",
+    "bio": ""
+  }
+]

@@ -1,0 +1,19 @@
+---
+import { getCollection } from 'astro:content';
+import Icon from './Icon.astro';
+const programmes = (await getCollection('programmes', ({ data }) => !data.draft)).sort((a, b) => a.data.order - b.data.order);
+---
+<div class="grid grid-4">
+  {programmes.map((p) => (
+    <a class="card programme-card reveal" href={`/ministries/community/${p.id}`}>
+      <div class="card__media">
+        {p.data.image ? <img src={p.data.image} alt={p.data.imageAlt ?? ''} loading="lazy" /> : <div class="media-fallback"><Icon name={p.data.icon} size={44} /></div>}
+      </div>
+      <div class="card__body">
+        <h3>{p.data.name}</h3>
+        <p>{p.data.summary}</p>
+        <span class="card__foot link-arrow">Find out more <Icon name="arrow-right" size={15} /></span>
+      </div>
+    </a>
+  ))}
+</div>
