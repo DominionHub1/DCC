@@ -2,7 +2,6 @@
 import site from '../data/site.json';
 import Icon from './Icon.astro';
 import Brand from './Brand.astro';
-import { jotformUrl } from '../lib/forms';
 
 // Only render configured social links — never a placeholder (AC-CL-04.2).
 const socials = [
@@ -12,9 +11,10 @@ const socials = [
   { key: 'spotify', label: 'Spotify playlist', url: site.social.spotify },
 ].filter((s) => s.url);
 const year = new Date().getFullYear();
-// Sign-ups open the Jotform newsletter form in a new tab with the email already filled in
-// (the form's email field must have the unique name "email"). Hidden until the form is set up.
-const newsletter = jotformUrl('newsletter');
+// Sign-ups are submitted straight into DCC's Jotform form (site.json → newsletter), which emails the team.
+// Jotform's confirmation opens in a new tab. Hidden until submitUrl is set.
+const nl = site.newsletter;
+const newsletter = /^https:\/\/[\w.-]*jotform\.com\/submit\/\d+\/?$/.test(nl.submitUrl) ? nl.submitUrl : '';
 ---
 <footer class="site-footer">
   <div class="container connect">
@@ -22,13 +22,17 @@ const newsletter = jotformUrl('newsletter');
       <h2>Stay Connected</h2>
       <p>Get the latest updates, events and encouragement from DCC.</p>
       {newsletter && (
-        <form class="newsletter" action={newsletter} method="get" target="_blank">
+        <form class="newsletter" action={newsletter} method="post" target="_blank" accept-charset="utf-8">
+          <input type="hidden" name="formID" value={nl.formId} />
+          <input type="hidden" name="simple_spc" value={`${nl.formId}-${nl.formId}`} />
+          <input type="hidden" name={nl.noteField} value={nl.note} />
+          <input type="hidden" name="website" value="" />
           <label for="newsletter-email" class="sr-only">Your email address</label>
-          <input id="newsletter-email" name="email" type="email" autocomplete="email" placeholder="Your email address" required />
-          <button class="btn btn--gold btn--sm" type="submit">Subscribe<span class="sr-only"> (opens in new tab)</span></button>
+          <input id="newsletter-email" name={nl.emailField} type="email" autocomplete="email" placeholder="Your email address" required />
+          <button class="btn btn--gold btn--sm" type="submit">Subscribe<span class="sr-only"> (confirmation opens in a new tab)</span></button>
         </form>
       )}
-      {newsletter && <p class="newsletter-status">Your sign-up opens in a new tab with your email filled in. Press <strong>Submit</strong> there to finish.</p>}
+      {newsletter && <p class="newsletter-status">Clicking Subscribe sends your email to the DCC team. A confirmation opens in a new tab.</p>}
     </div>
     <div class="socials">
       {socials.map((s) => (

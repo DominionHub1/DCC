@@ -114,7 +114,7 @@ The chat button in the corner of every page is [Brevo Conversations](https://www
    | `ministry` | Each ministry page → Get connected | Ministry (`ministry`, filled in automatically, can be hidden), Name\*, Email\*, Phone, Message\* |
    | `volunteer` | Community Ministry → Volunteer with us | Where would you like to help?\* (`area`; options exactly: Breakfast Morning, Food Support, Career & Development, Anywhere I am needed), Name\*, Email\*, Phone, Anything else? |
    | `prayer` | Community Ministry → Prayer request | Keep my request anonymous (checkbox; use Jotform *Conditions* to hide the name when ticked), Name, Prayer request\*, I'd like someone to contact me (checkbox), Email, Phone |
-   | `newsletter` | Footer "Stay Connected" | Email\* (`email`). Visitors type their email in the footer and the form opens in a new tab with it filled in. The footer box is hidden until this is connected. |
+   | `newsletter` | Footer "Stay Connected" | Now set in `site.json → newsletter` instead: Subscribe submits the email straight into DCC's Jotform Contact Us form (`submitUrl`, `emailField`, `noteField` from the form's embed source code), and Jotform emails the team. |
    | `support` | Not used on any page yet | |
 
 4. **CMS.** For staff editing without code (spec module 08), connect a headless CMS such as Decap CMS (free, Git-based) or Sanity (roles, drafts, scheduling) to the files above.

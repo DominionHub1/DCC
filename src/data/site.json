@@ -62,6 +62,15 @@
     "brevoConversationsId": "6ae73adc89140a74e6031799"
   },
 
+  "newsletter": {
+    "_comment": "Footer 'Stay Connected' sign-up. Clicking Subscribe submits the visitor's email straight into this Jotform form (DCC's Contact Us form), which emails the team. submitUrl is the form's action address; emailField and noteField are the name attributes of its email and message fields (from Jotform → Publish → Embed → Source code). Leave submitUrl blank to hide the sign-up.",
+    "submitUrl": "https://eu-submit.jotform.com/submit/263043473673055",
+    "formId": "263043473673055",
+    "emailField": "q3_q3_email1",
+    "noteField": "q5_q5_textarea3",
+    "note": "Newsletter sign-up from the website (Stay Connected)"
+  },
+
   "forms": {
     "_comment": "Jotform form for each part of the website. Paste the form's ID (e.g. 251234567890123) or its full link (e.g. https://form.jotform.com/251234567890123; use the full link for EU-hosted forms). Jotform delivers submissions and email notifications. Leave blank and that page shows 'email or call us' instead. The same form can be reused for several entries. See README → Forms for the fields each form needs.",
     "contact": "",
@@ -71,7 +80,7 @@
     "prayer": "",
     "support": "",
     "volunteer": "",
-    "newsletter": "263043473673055"
+    "newsletter": ""
   },
 
   "heroVideo": {
