@@ -5,7 +5,6 @@ import PageHero from '../../../components/PageHero.astro';
 import Icon from '../../../components/Icon.astro';
 import SectionHead from '../../../components/SectionHead.astro';
 import ProgrammeGrid from '../../../components/ProgrammeGrid.astro';
-import Field from '../../../components/Field.astro';
 import FormShell from '../../../components/FormShell.astro';
 import PrayerBand from '../../../components/PrayerBand.astro';
 import ProgrammeGive from '../../../components/ProgrammeGive.astro';
@@ -13,7 +12,6 @@ import ProgrammeGive from '../../../components/ProgrammeGive.astro';
 const ministry = (await getEntry('ministries', 'community'))!;
 const { Content } = await render(ministry);
 const programmes = (await getCollection('programmes', ({ data }) => !data.draft)).sort((a, b) => a.data.order - b.data.order);
-const helpAreas = [...programmes.filter((p) => p.data.volunteering).map((p) => p.data.name), 'Anywhere I am needed'];
 import site from '../../../data/site.json';
 ---
 <Base title="Community Ministry" description="DCC's Community Ministry: Breakfast Morning, food support, career development, pastoral care and prayer. How DCC cares for Peterborough, and how you can get support or help." image={ministry.data.image}>
@@ -57,15 +55,7 @@ import site from '../../../data/site.json';
         <a class="link-arrow" href="/give">Or support our outreach through giving <Icon name="arrow-right" size={15} /></a>
       </div>
       <div class="card form-card">
-        <FormShell form="volunteer" submit="Count me in" success="Thank you for offering to help! Our outreach team will be in touch soon.">
-          <Field id="vol-area" name="area" label="Where would you like to help?" as="select" required preselect="help" options={helpAreas} spokenName="where you'd like to help" />
-          <div class="form-row">
-            <Field id="vol-name" name="name" label="Your name" required autocomplete="name" spokenName="your name" />
-            <Field id="vol-email" name="email" label="Email" type="email" required autocomplete="email" spokenName="your email address" />
-          </div>
-          <Field id="vol-phone" name="phone" label="Phone" type="tel" autocomplete="tel" />
-          <Field id="vol-message" name="message" label="Anything else?" as="textarea" hint="For example, your availability or relevant experience." />
-        </FormShell>
+        <FormShell form="volunteer" title="Volunteer form" forward={{ help: 'area' }} />
       </div>
     </div>
   </section>

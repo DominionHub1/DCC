@@ -19,7 +19,7 @@ All content is data, separate from the design, so a CMS can be connected later w
 
 | What | File(s) |
 | --- | --- |
-| Service time, address, contacts, socials, giving, form endpoints | `src/data/site.json` |
+| Service time, address, contacts, socials, giving, Jotform form IDs | `src/data/site.json` |
 | Regular weekly/monthly activities (Sunday service, Thanksgiving, Discipleship, Breakfast) | `src/data/schedule.json` |
 | One-off events | `src/content/events/*.md` (copy `_example-night-of-prayer.md`) |
 | Sermons / messages (YouTube) | `src/data/messages.json` |
@@ -83,18 +83,31 @@ The `_sample-*.md` files are preview-only examples: they show on `npm run dev` w
 - Testimonies appear only when **both** `approved` and `consentRecorded` are `true`. With none, the section is hidden.
 - Social icons render only for accounts that are filled in. No placeholder links.
 - Announcements show only while `active` and between `starts` and `expires`.
-- Forms never claim success unless the form service confirms it.
+- Forms are Jotform forms; a form that isn't connected yet shows "email or call us" instead.
 
 ## Going live: checklist
 
 1. **Hosting (GitHub Pages, set up).** `.github/workflows/deploy.yml` builds, tests and publishes the site on every push to `main`, after the Sunday YouTube sync, and once a day (so dates and "This Week" stay current). One-time step: in the repo go to **Settings → Pages → Source** and choose **GitHub Actions**. The site is then live at `https://dominionhub1.github.io/DCC/` (`scripts/apply-base-path.mjs` adjusts links for that `/DCC` sub-folder). To use `dominionconnections.org` instead, enter it under Settings → Pages → Custom domain and point the domain's DNS at GitHub Pages; links then need no adjustment and the script does nothing.
    Alternatively, deploy to Netlify, Cloudflare Pages or Vercel (all free for a site this size). Build command `npm run build`, output folder `dist`. Point `dominionconnections.org` at it. HTTPS is automatic.
 2. **Daily rebuild.** Add a scheduled build hook (once a day, early morning) so dates, "This Week" and the latest message stay current.
-3. **Forms.** Forms already work: every form is emailed to `site.json → forms.deliverTo` (currently admin@dominionhub.org.uk) through [FormSubmit](https://formsubmit.co), which needs no account.
-   - **Activate it once:** after the site is live, send any form yourself. FormSubmit emails an activation link to that inbox. Click it, and every form after that is delivered. Until it's activated, visitors see an honest "not sent, please email us" message, never a false success.
-   - **Route a form to a team:** put that team's email address next to the form in `site.json → forms` (e.g. `"prayer": "prayer-team@..."`). Each new address needs its own one-time activation.
-   - **Use another service instead:** paste its `https://` endpoint URL (Formspree, a Netlify function…) next to the form. It receives the fields as JSON.
-   - Each email has a clear subject ("Website: new prayer request (confidential)" etc.), the visitor's address as reply-to, and the page it came from. Anonymous prayer requests never include the name.
+3. **Forms (Jotform).** Every form on the site is a [Jotform](https://www.jotform.com) form embedded in the page. Jotform stores each submission, emails it to whoever you choose, and shows its own thank-you message.
+   - **Connect a form:** build it in Jotform (fields below), then copy its ID from the form's link (`https://form.jotform.com/<ID>`) into `src/data/site.json → forms` next to the right name, and push. Use the full link instead of the ID for EU-hosted forms. Until a form is connected, its page shows "email or call us" buttons instead. Nothing is ever silently lost.
+   - **Who receives it:** set this in Jotform → *Settings → Emails → Notification email*. For prayer requests, send notifications to the prayer team only (the page promises that only the prayer team sees them).
+   - **Look:** pick colours and fonts in Jotform's *Form Designer* to match the site (navy `#0b1630`, gold `#f5a623`).
+   - **Free plan:** Jotform's free plan allows 5 forms and 100 submissions a month. To stay within it, one general enquiry form can be used for several entries (paste the same ID).
+   - **Pre-filled answers:** some links choose an option for the visitor. For this to work, the field's *unique name* (Jotform → field → *Properties → Advanced → Field details*) must match the name in brackets below.
+
+   | site.json name | Where it appears | Suggested fields |
+   | --- | --- | --- |
+   | `contact` | Contact Us | Name\*, Email\*, Phone, What is it about?\* (General enquiry / Visiting DCC / Events / Ministries / Giving / Something else), Message\* |
+   | `visit` | New Here → Let us know you're coming | Name\*, Email\*, Phone, Date of visit, Who's coming? (Just me / Me and a friend / My family (with children) / A group), Anything we can help with? |
+   | `nextSteps` | New Here → Take your next step | I'm interested in\* (`step`; options exactly: Membership, Serve Class, Serving, Connect group), Name\*, Email\*, Phone, Anything you'd like us to know? |
+   | `ministry` | Each ministry page → Get connected | Ministry (`ministry`, filled in automatically, can be hidden), Name\*, Email\*, Phone, Message\* |
+   | `volunteer` | Community Ministry → Volunteer with us | Where would you like to help?\* (`area`; options exactly: Breakfast Morning, Food Support, Career & Development, Anywhere I am needed), Name\*, Email\*, Phone, Anything else? |
+   | `prayer` | Community Ministry → Prayer request | Keep my request anonymous (checkbox; use Jotform *Conditions* to hide the name when ticked), Name, Prayer request\*, I'd like someone to contact me (checkbox), Email, Phone |
+   | `newsletter` | Footer "Stay Connected" | Email\* (`email`). Visitors type their email in the footer and the form opens in a new tab with it filled in. The footer box is hidden until this is connected. |
+   | `support` | Not used on any page yet | |
+
 4. **CMS.** For staff editing without code (spec module 08), connect a headless CMS such as Decap CMS (free, Git-based) or Sanity (roles, drafts, scheduling) to the files above.
 
 ## To confirm before launch (TBC)
@@ -109,6 +122,6 @@ The `_sample-*.md` files are preview-only examples: they show on `npm run dev` w
 - [ ] Ministry meeting times and contacts; safeguarding-approved wording for Children's Ministry.
 - [ ] Speaker names for messages (`messages.json`); the date of the October midweek message.
 - [ ] Privacy, Safeguarding and Cookies pages need trustee approval (they carry a "draft" notice).
-- [ ] Prayer requests go to the admin inbox until a prayer-team address is set in `site.json → forms.prayer` (the prayer page promises only the prayer team sees them).
-- [ ] Activate FormSubmit for the admin inbox (see "Forms" above).
+- [ ] Prayer request notifications in Jotform go to the prayer team only (the prayer page promises only the prayer team sees them).
+- [ ] Build the Jotform forms and paste their IDs into `site.json → forms` (see "Forms" above).
 - [ ] More approved photos, especially for Women, Youth and Children (only consented images of children).

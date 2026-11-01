@@ -1,12 +1,37 @@
 ---
-import { formEndpoint, formSubject, type FormName } from '../lib/forms';
-interface Props { form: FormName; submit: string; success: string; privacy?: string }
-const { form, submit, success, privacy = 'We only use these details to respond to your enquiry. See our privacy notice.' } = Astro.props;
+import site from '../data/site.json';
+import { jotformUrl, jotformId, withPrefill, type FormName } from '../lib/forms';
+interface Props {
+  form: FormName;
+  /** Accessible name for the embedded form, e.g. "Contact form". */
+  title: string;
+  /** Fixed values to fill in, keyed by the Jotform field's unique name, e.g. { ministry: 'Youth' }. */
+  prefill?: Record<string, string>;
+  /** Page link parameters to pass on to the form: { pageParam: jotformFieldName }, e.g. { help: 'area' }. */
+  forward?: Record<string, string>;
+}
+const { form, title, prefill = {}, forward } = Astro.props;
+const base = jotformUrl(form);
+const src = base && withPrefill(base, prefill);
+const id = jotformId(base);
 ---
-<form class="form" data-form={form} data-endpoint={formEndpoint(form)} data-subject={formSubject(form)} data-success={success} novalidate>
-  <slot />
-  <input class="honeypot" type="text" name="_gotcha" tabindex="-1" autocomplete="off" aria-hidden="true" />
-  <p class="hint muted" style="margin:0;font-size:.88rem">{privacy} <a href="/privacy">Privacy notice</a>.</p>
-  <div><button class="btn btn--gold" type="submit"><span data-label>{submit}</span></button></div>
-  <div class="form-status" role="status" aria-live="polite" tabindex="-1" data-form-status></div>
-</form>
+{src ? (
+  <iframe
+    class="jotform-embed"
+    id={id ? `JotFormIFrame-${id}` : undefined}
+    title={title}
+    src={src}
+    data-jotform
+    data-jotform-forward={forward ? JSON.stringify(forward) : undefined}
+    loading="lazy"
+    allow="geolocation; microphone; camera; fullscreen"
+  ></iframe>
+) : (
+  <div class="form-pending">
+    <p><strong>Our online form is being set up.</strong> In the meantime, we'd love to hear from you:</p>
+    <div class="btn-row">
+      <a class="btn btn--gold btn--sm" href={`mailto:${site.contact.email}`}>Email {site.contact.email}</a>
+      <a class="btn btn--outline btn--sm" href={`tel:${site.contact.phone}`}>Call {site.contact.phoneDisplay}</a>
+    </div>
+  </div>
+)}

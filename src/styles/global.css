@@ -946,3 +946,8 @@ img.is-broken { visibility: hidden; }
 .live-card .btn { grid-column: 1 / -1; justify-self: start; }
 @media (max-width: 900px) { .messages-layout { grid-template-columns: 1fr; } .live-card { margin-top: 4px; } }
 @media (max-width: 560px) { .messages-aside .message-mini { grid-template-columns: 112px 1fr; } }
+
+/* Jotform forms (FormShell.astro). The height grows to fit once Jotform reports it. */
+.jotform-embed { display: block; width: 100%; min-width: 100%; height: 640px; border: 0; background: transparent; }
+.form-pending { display: grid; gap: 14px; }
+.form-pending p { margin: 0; }

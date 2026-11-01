@@ -168,127 +168,31 @@ $$<HTMLButtonElement>('[data-ics]').forEach((btn) => btn.addEventListener('click
   URL.revokeObjectURL(a.href);
 }));
 
-/* ---------- Forms ----------
-   Each form posts JSON to its own endpoint (configured in site.json) so it reaches the right team.
-   Success is only shown after the endpoint confirms (GAC-06/07). */
-const FALLBACK = 'Sorry — online submissions aren\'t switched on yet. Please email admin@dominionhub.org.uk or call +44 7884 974536 and we\'ll be glad to help.';
-
-function fieldError(input: HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement, message: string) {
-  const err = document.getElementById(`${input.id}-error`);
-  input.setAttribute('aria-invalid', message ? 'true' : 'false');
-  if (err) { err.textContent = message; err.classList.toggle('is-visible', !!message); }
-}
-
-function validate(form: HTMLFormElement): boolean {
-  let firstBad: HTMLElement | null = null;
-  $$<HTMLInputElement>('input, textarea, select', form).forEach((input) => {
-    if (input.type === 'hidden' || input.classList.contains('honeypot') || input.closest('[hidden]')) { fieldError(input, ''); return; }
-    let msg = '';
-    if (input.required && !input.value.trim() && input.type !== 'checkbox') msg = `Please enter ${input.dataset.name || 'this field'}.`;
-    else if (input.type === 'checkbox' && input.required && !input.checked) msg = input.dataset.msg || 'Please tick this box to continue.';
-    else if (input.type === 'email' && input.value && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(input.value)) msg = 'Please enter a valid email address, like name@example.com.';
-    fieldError(input, msg);
-    if (msg && !firstBad) firstBad = input;
-  });
-  // Follow-up requested → need at least one way to reach them (AC-CARE-01.3)
-  const follow = $<HTMLInputElement>('[name="followUp"]', form);
-  if (follow && (follow.type === 'hidden' || follow.checked)) {
-    const email = $<HTMLInputElement>('[name="email"]', form);
-    const phone = $<HTMLInputElement>('[name="phone"]', form);
-    if (email && phone && !email.value.trim() && !phone.value.trim()) {
-      fieldError(email, 'To follow up, we need an email address or phone number.');
-      firstBad ??= email;
-    }
-  }
-  (firstBad as HTMLElement | null)?.focus();
-  return !firstBad;
-}
-
-function setStatus(form: HTMLFormElement, kind: 'success' | 'error' | '', message: string, focus = true) {
-  const el = $('[data-form-status]', form) ?? $('[data-form-status]', form.parentElement!);
-  if (!el) return;
-  el.textContent = message;
-  el.className = el.className.replace(/\bform-status--\w+/g, '').trim();
-  if (kind && el.classList.contains('form-status')) el.classList.add('is-visible', `form-status--${kind}`);
-  if (focus) el.focus?.();
-}
-
-$$<HTMLFormElement>('form[data-form]').forEach((form) => {
-  // Anonymous prayer: hide identity fields and make them optional (AC-CARE-01.2)
-  const anon = $<HTMLInputElement>('[name="anonymous"]', form);
-  const identity = $('[data-identity]', form);
-  anon?.addEventListener('change', () => { if (identity) identity.hidden = anon.checked; });
-
-  // Category pre-selection from links like ?category=Food%20Support or ?ministry=Youth
+/* ---------- Jotform forms ----------
+   Forms are Jotform forms embedded in an iframe (see FormShell.astro and site.json → forms).
+   Jotform delivers each submission and shows its own confirmation, so nothing is sent from this page. */
+$$<HTMLIFrameElement>('iframe[data-jotform]').forEach((frame) => {
+  // Pass choices made via links (e.g. /new-here?step=Serve%20Class) on to the form's matching field.
+  const forward = frame.dataset.jotformForward;
+  if (!forward) return;
   const params = new URLSearchParams(location.search);
-  $$<HTMLSelectElement>('select[data-preselect]', form).forEach((sel) => {
-    const v = params.get(sel.dataset.preselect!);
-    if (v && [...sel.options].some((o) => o.value === v)) sel.value = v;
-  });
+  const url = new URL(frame.src);
+  let changed = false;
+  for (const [pageParam, field] of Object.entries(JSON.parse(forward) as Record<string, string>)) {
+    const v = params.get(pageParam);
+    if (v) { url.searchParams.set(field, v); changed = true; }
+  }
+  if (changed) frame.src = url.href;
+});
 
-  $$<HTMLInputElement>('input, textarea, select', form).forEach((i) => i.addEventListener('input', () => {
-    if (i.getAttribute('aria-invalid') === 'true') fieldError(i, '');
-  }));
-
-  let sending = false;
-  form.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    if (sending) return;
-    if (!validate(form)) { setStatus(form, 'error', 'Please check the highlighted fields.', false); return; }
-    const endpoint = form.dataset.endpoint;
-    const raw = new FormData(form);
-    if (String(raw.get('_gotcha') ?? '')) return; // bot
-    raw.delete('_gotcha');
-    if (anon?.checked) raw.delete('name');
-    if (!endpoint) { setStatus(form, 'error', FALLBACK); return; }
-
-    const viaEmail = endpoint.startsWith('https://formsubmit.co/');
-    const body: Record<string, string> = {};
-    raw.forEach((value, key) => {
-      const el = form.elements.namedItem(key) as HTMLInputElement | null;
-      if (el && el.closest?.('[hidden]')) return; // fields hidden by the form (e.g. anonymous prayer) are not sent
-      let v = String(value).trim();
-      if (el?.type === 'checkbox') v = 'Yes';
-      if (!v) return;
-      // Email delivery: use the visible label ("Your name") so the email reads clearly.
-      const label = !viaEmail ? '' : el?.type === 'checkbox'
-        ? el.closest('label')?.textContent?.trim()
-        : el?.id ? document.querySelector(`label[for="${el.id}"]`)?.firstChild?.textContent?.trim() : '';
-      body[label || key] = v;
-    });
-    const email = String(raw.get('email') ?? '').trim();
-    if (viaEmail) {
-      Object.assign(body, { _subject: form.dataset.subject || 'Website form', _template: 'table', _captcha: 'false', 'Sent from': location.href });
-      if (email) body._replyto = email;
-    } else {
-      body._form = form.dataset.form ?? '';
-    }
-
-    const btn = $<HTMLButtonElement>('[type="submit"]', form);
-    const label = btn && ($('[data-label]', btn) ?? btn);
-    const original = label?.textContent ?? '';
-    sending = true;
-    btn?.setAttribute('disabled', '');
-    btn?.setAttribute('aria-busy', 'true');
-    if (label) label.textContent = 'Sending…';
-    try {
-      const res = await fetch(endpoint, { method: 'POST', headers: { 'Content-Type': 'application/json', Accept: 'application/json' }, body: JSON.stringify(body) });
-      if (!res.ok) throw new Error(String(res.status));
-      // Some services answer 200 with { success: "false" } or { ok: false }: only a confirmed send counts (GAC-06/07).
-      const json = await res.json().catch(() => ({}));
-      if (json && (json.success === 'false' || json.success === false || json.ok === false)) throw new Error(json.message || 'rejected');
-      form.reset();
-      if (identity) identity.hidden = false;
-      setStatus(form, 'success', form.dataset.success || 'Thank you — your message has been sent.');
-    } catch {
-      setStatus(form, 'error', 'Sorry, something went wrong and your message was not sent. Please try again, or email admin@dominionhub.org.uk.');
-    } finally {
-      sending = false;
-      btn?.removeAttribute('disabled');
-      btn?.removeAttribute('aria-busy');
-      if (label) label.textContent = original;
-    }
-  });
+// Jotform posts "setHeight:<px>:<formId>" so the frame can grow to fit the form without its own scrollbar.
+window.addEventListener('message', (e) => {
+  if (typeof e.data !== 'string' || !/^https:\/\/([\w-]+\.)*(jotform\.com|jotform\.eu|jotform\.me|jotfor\.ms)$/.test(e.origin)) return;
+  const [cmd, value, formId] = e.data.split(':');
+  const frame = formId ? document.getElementById(`JotFormIFrame-${formId}`) : null;
+  if (!(frame instanceof HTMLIFrameElement)) return;
+  if (cmd === 'setHeight' && Number(value) > 0) frame.style.height = `${Number(value)}px`;
+  if (cmd === 'scrollIntoView') frame.scrollIntoView({ behavior: 'smooth', block: 'start' });
 });
 
 /* ---------- Hero background videos (homepage, New Here) ----------

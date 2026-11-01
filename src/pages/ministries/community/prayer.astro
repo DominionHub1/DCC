@@ -1,7 +1,6 @@
 ---
 import Base from '../../../layouts/Base.astro';
 import PageHero from '../../../components/PageHero.astro';
-import Field from '../../../components/Field.astro';
 import FormShell from '../../../components/FormShell.astro';
 import EmergencyNotice from '../../../components/EmergencyNotice.astro';
 ---
@@ -20,18 +19,7 @@ import EmergencyNotice from '../../../components/EmergencyNotice.astro';
         <EmergencyNotice />
       </div>
       <div class="card form-card">
-        <FormShell form="prayer" submit="Send prayer request" success="Thank you. Your prayer request has been received by our prayer team, and we will be praying for you." privacy="Your request is seen only by DCC's authorised prayer team and is handled in confidence.">
-          <label class="check"><input type="checkbox" name="anonymous" /> <span>Keep my request anonymous</span></label>
-          <div data-identity>
-            <Field id="pr-name" name="name" label="Your name" autocomplete="name" />
-          </div>
-          <Field id="pr-request" name="request" label="Your prayer request" as="textarea" required spokenName="your prayer request" />
-          <label class="check"><input type="checkbox" name="followUp" /> <span>I'd like someone from the prayer team to contact me</span></label>
-          <div class="form-row">
-            <Field id="pr-email" name="email" label="Email" type="email" autocomplete="email" />
-            <Field id="pr-phone" name="phone" label="Phone" type="tel" autocomplete="tel" />
-          </div>
-        </FormShell>
+        <FormShell form="prayer" title="Prayer request form" />
       </div>
     </div>
   </section>

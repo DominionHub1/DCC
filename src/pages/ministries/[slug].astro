@@ -2,7 +2,6 @@
 import { getCollection, render } from 'astro:content';
 import Base from '../../layouts/Base.astro';
 import PageHero from '../../components/PageHero.astro';
-import Field from '../../components/Field.astro';
 import FormShell from '../../components/FormShell.astro';
 import ChildSafeguarding from '../../components/ChildSafeguarding.astro';
 
@@ -33,13 +32,7 @@ const others = all.filter((o) => o.id !== m.id).sort((a, b) => a.data.order - b.
         <div class="card form-card" id="get-connected">
           <h2 style="font-size:1.5rem">Get connected</h2>
           <p class="muted">Send a message to the {m.data.name} Ministry team and they'll be in touch.</p>
-          <FormShell form="ministry" submit="Send message" success={`Thank you! Your message has been passed to the ${m.data.name} Ministry team.`}>
-            <input type="hidden" name="ministry" value={m.data.name} />
-            <Field id="min-name" name="name" label="Your name" required autocomplete="name" spokenName="your name" />
-            <Field id="min-email" name="email" label="Email" type="email" required autocomplete="email" spokenName="your email address" />
-            <Field id="min-phone" name="phone" label="Phone" type="tel" autocomplete="tel" />
-            <Field id="min-message" name="message" label="Message" as="textarea" required spokenName="a message" />
-          </FormShell>
+          <FormShell form="ministry" title={`${m.data.name} Ministry enquiry form`} prefill={{ ministry: m.data.name }} />
         </div>
       )}
     </div>

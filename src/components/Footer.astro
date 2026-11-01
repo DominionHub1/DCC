@@ -2,7 +2,7 @@
 import site from '../data/site.json';
 import Icon from './Icon.astro';
 import Brand from './Brand.astro';
-import { formEndpoint, formSubject } from '../lib/forms';
+import { jotformUrl } from '../lib/forms';
 
 // Only render configured social links — never a placeholder (AC-CL-04.2).
 const socials = [
@@ -12,19 +12,22 @@ const socials = [
   { key: 'spotify', label: 'Spotify playlist', url: site.social.spotify },
 ].filter((s) => s.url);
 const year = new Date().getFullYear();
+// Sign-ups open the Jotform newsletter form in a new tab with the email already filled in
+// (the form's email field must have the unique name "email"). Hidden until the form is set up.
+const newsletter = jotformUrl('newsletter');
 ---
 <footer class="site-footer">
   <div class="container connect">
     <div>
       <h2>Stay Connected</h2>
       <p>Get the latest updates, events and encouragement from DCC.</p>
-      <form class="newsletter" data-form="newsletter" data-endpoint={formEndpoint('newsletter')} data-subject={formSubject('newsletter')} data-success="Thank you for subscribing! You'll hear from us soon." novalidate>
-        <label for="newsletter-email" class="sr-only">Your email address</label>
-        <input id="newsletter-email" name="email" type="email" data-name="your email address" autocomplete="email" placeholder="Your email address" required />
-        <input class="honeypot" type="text" name="_gotcha" tabindex="-1" autocomplete="off" aria-hidden="true" />
-        <button class="btn btn--gold btn--sm" type="submit">Subscribe</button>
-      </form>
-      <p class="newsletter-status" role="status" aria-live="polite" data-form-status></p>
+      {newsletter && (
+        <form class="newsletter" action={newsletter} method="get" target="_blank">
+          <label for="newsletter-email" class="sr-only">Your email address</label>
+          <input id="newsletter-email" name="email" type="email" autocomplete="email" placeholder="Your email address" required />
+          <button class="btn btn--gold btn--sm" type="submit">Subscribe<span class="sr-only"> (opens in new tab)</span></button>
+        </form>
+      )}
     </div>
     <div class="socials">
       {socials.map((s) => (

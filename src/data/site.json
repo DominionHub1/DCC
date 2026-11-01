@@ -58,8 +58,7 @@
   },
 
   "forms": {
-    "_comment": "Where each form is delivered (US-ADM-04). deliverTo receives every form left blank below, by email via FormSubmit (no account needed; the very first submission sends a one-time activation email to that inbox, which must be confirmed). To route a form to a different team, put that team's email address next to it (e.g. \"prayer\": \"prayer@...\"). To use a form service instead (Formspree etc.), paste its https:// endpoint URL. If deliverTo is empty and a form is blank, the form shows an honest 'email us instead' message.",
-    "deliverTo": "admin@dominionhub.org.uk",
+    "_comment": "Jotform form for each part of the website. Paste the form's ID (e.g. 251234567890123) or its full link (e.g. https://form.jotform.com/251234567890123; use the full link for EU-hosted forms). Jotform delivers submissions and email notifications. Leave blank and that page shows 'email or call us' instead. The same form can be reused for several entries. See README → Forms for the fields each form needs.",
     "contact": "",
     "visit": "",
     "ministry": "",

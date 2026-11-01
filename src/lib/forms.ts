@@ -1,34 +1,32 @@
 import site from '../data/site.json';
 
-export type FormName = Exclude<keyof typeof site.forms, '_comment' | 'deliverTo'>;
-
-/** Subject line for the email each form sends, so the inbox is easy to sort. */
-const SUBJECTS: Record<string, string> = {
-  contact: 'Website: new contact message',
-  visit: 'Website: someone is planning a visit',
-  ministry: 'Website: ministry enquiry',
-  nextSteps: 'Website: next steps enquiry',
-  prayer: 'Website: new prayer request (confidential)',
-  support: 'Website: request for support',
-  volunteer: 'Website: volunteer offer',
-  newsletter: 'Website: newsletter sign-up',
-};
-
-const EMAIL = /^[^\s@/?#]+@[^\s@/?#]+\.[^\s@/?#]+$/;
+export type FormName = Exclude<keyof typeof site.forms, '_comment'>;
 
 /**
- * Where a form is delivered. Each entry in site.json → forms may be:
- *  - blank: delivered by email to `forms.deliverTo` (via FormSubmit, no account needed)
- *  - an email address: delivered by email to that address instead (e.g. the prayer team)
- *  - a URL: posted as JSON to that endpoint (Formspree, Netlify function, etc.)
+ * The Jotform address for a form, from site.json → forms. Each entry may be:
+ *  - a Jotform form ID, e.g. "251234567890123" (served from form.jotform.com)
+ *  - a full Jotform form link, e.g. "https://form.jotform.com/251234567890123"
+ *    (use the full link for EU-hosted forms: "https://eu.jotform.com/...")
+ *  - blank: the form isn't set up yet, so the page asks visitors to email or call instead
  */
-export function formEndpoint(name: FormName): string {
+export function jotformUrl(name: FormName): string {
   const value = String((site.forms as Record<string, string>)[name] ?? '').trim();
-  if (/^https:\/\//.test(value)) return value;
-  const email = EMAIL.test(value) ? value : String(site.forms.deliverTo ?? '').trim();
-  return EMAIL.test(email) ? `https://formsubmit.co/ajax/${email}` : '';
+  if (/^\d{6,}$/.test(value)) return `https://form.jotform.com/${value}`;
+  try {
+    const url = new URL(value);
+    if (url.protocol === 'https:' && /(^|\.)(jotform\.com|jotform\.eu|jotform\.me|jotfor\.ms)$/.test(url.hostname)) return url.href;
+  } catch { /* not a URL */ }
+  return '';
 }
 
-export function formSubject(name: FormName): string {
-  return SUBJECTS[name] ?? 'Website: new form submission';
+/** The Jotform form ID at the end of a form link (used to match Jotform's resize messages). */
+export function jotformId(url: string): string {
+  return url.match(/(\d{6,})\/?(?:[?#]|$)/)?.[1] ?? '';
+}
+
+/** Adds prefill values (Jotform field "unique names" → values) to a form link. */
+export function withPrefill(url: string, prefill: Record<string, string | undefined> = {}): string {
+  const u = new URL(url);
+  for (const [k, v] of Object.entries(prefill)) if (v) u.searchParams.set(k, v);
+  return u.href;
 }

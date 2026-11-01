@@ -2,7 +2,6 @@
 import Base from '../layouts/Base.astro';
 import PageHero from '../components/PageHero.astro';
 import Icon from '../components/Icon.astro';
-import Field from '../components/Field.astro';
 import FormShell from '../components/FormShell.astro';
 import site from '../data/site.json';
 
@@ -54,15 +53,7 @@ const socials = [
         <p class="muted" style="margin-top:18px">Sunday Service: every {site.service.day} at {site.service.time}. <a href="/new-here#plan-your-visit">Plan your visit</a></p>
       </div>
       <div class="card form-card">
-        <FormShell form="contact" submit="Send message" success="Thank you! Your message has been sent and our team will be in touch soon.">
-          <div class="form-row">
-            <Field id="c-name" name="name" label="Your name" required autocomplete="name" spokenName="your name" />
-            <Field id="c-email" name="email" label="Email" type="email" required autocomplete="email" spokenName="your email address" />
-          </div>
-          <Field id="c-phone" name="phone" label="Phone" type="tel" autocomplete="tel" />
-          <Field id="c-subject" name="subject" label="What is it about?" as="select" required options={['General enquiry', 'Visiting DCC', 'Events', 'Ministries', 'Giving', 'Something else']} spokenName="what your message is about" />
-          <Field id="c-message" name="message" label="Message" as="textarea" required spokenName="your message" />
-        </FormShell>
+        <FormShell form="contact" title="Contact form" />
       </div>
     </div>
   </section>
