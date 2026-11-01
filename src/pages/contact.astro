@@ -1,0 +1,112 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import Icon from '../components/Icon.astro';
+import Field from '../components/Field.astro';
+import FormShell from '../components/FormShell.astro';
+import site from '../data/site.json';
+
+const v = site.venue;
+const address = [v.street, `${v.city}, ${v.county}`, v.postcode];
+const appleMaps = `https://maps.apple.com/?q=${encodeURIComponent(`${v.street}, ${v.city} ${v.postcode}`)}`;
+const socials = [
+  { key: 'facebook', label: 'Facebook', handle: 'dominion.christian', url: site.social.facebook },
+  { key: 'instagram', label: 'Instagram', handle: '@rccg_dominionconnections', url: site.social.instagram },
+  { key: 'youtube', label: 'YouTube', handle: '@dominionchristianconnections', url: site.social.youtube },
+].filter((s) => s.url);
+---
+<Base title="Contact Us" description={`Contact Dominion Christian Connections, ${v.street}, ${v.city} ${v.postcode}. Email ${site.contact.email} or call ${site.contact.phoneDisplay}.`}>
+  <PageHero title="Contact Us" eyebrow="We'd love to hear from you" lead="Whether you have a question, need prayer or want to visit, here's how to reach us." crumbs={[]} />
+
+  <!-- Ways to reach us -->
+  <section class="section section--tight">
+    <div class="container contact-cards">
+      <a class="contact-card" href={`mailto:${site.contact.email}`}>
+        <span class="icon-tile icon-tile--gold"><Icon name="mail" size={22} /></span>
+        <span><strong>Email</strong>{site.contact.email}</span>
+      </a>
+      <a class="contact-card" href={`tel:${site.contact.phone}`}>
+        <span class="icon-tile icon-tile--gold"><Icon name="phone" size={22} /></span>
+        <span><strong>Phone</strong>{site.contact.phoneDisplay}</span>
+      </a>
+      <a class="contact-card" href={v.mapsUrl} target="_blank" rel="noopener">
+        <span class="icon-tile icon-tile--gold"><Icon name="map-pin" size={22} /></span>
+        <span><strong>Visit us</strong>{v.street}, {v.city} {v.postcode}</span>
+      </a>
+    </div>
+  </section>
+
+  <!-- General enquiries -->
+  <section class="section section--sky" id="enquiries" aria-labelledby="enquiries-h">
+    <div class="container grid grid-2" style="align-items:start">
+      <div>
+        <div class="eyebrow">General enquiries</div>
+        <h2 id="enquiries-h">Send us a message</h2>
+        <p class="muted">For questions about services, events, ministries or anything else, send us a message and a member of our team will get back to you.</p>
+        <address class="contact-address">
+          <strong>{site.name}</strong><br />
+          {address.map((line) => <>{line}<br /></>)}
+        </address>
+        <div class="btn-row">
+          <a class="btn btn--sm" href={v.mapsUrl} target="_blank" rel="noopener"><Icon name="navigation" size={16} /> Google Maps</a>
+          <a class="btn btn--outline btn--sm" href={appleMaps} target="_blank" rel="noopener">Apple Maps</a>
+        </div>
+        <p class="muted" style="margin-top:18px">Sunday Service: every {site.service.day} at {site.service.time}. <a href="/new-here#plan-your-visit">Plan your visit</a></p>
+      </div>
+      <div class="card form-card">
+        <FormShell form="contact" submit="Send message" success="Thank you! Your message has been sent and our team will be in touch soon.">
+          <div class="form-row">
+            <Field id="c-name" name="name" label="Your name" required autocomplete="name" spokenName="your name" />
+            <Field id="c-email" name="email" label="Email" type="email" required autocomplete="email" spokenName="your email address" />
+          </div>
+          <Field id="c-phone" name="phone" label="Phone" type="tel" autocomplete="tel" />
+          <Field id="c-subject" name="subject" label="What is it about?" as="select" required options={['General enquiry', 'Visiting DCC', 'Events', 'Ministries', 'Giving', 'Something else']} spokenName="what your message is about" />
+          <Field id="c-message" name="message" label="Message" as="textarea" required spokenName="your message" />
+        </FormShell>
+      </div>
+    </div>
+  </section>
+
+  <!-- Prayer and safeguarding -->
+  <section class="section" aria-label="Prayer and safeguarding">
+    <div class="container grid grid-2">
+      <div class="card contact-panel">
+        <span class="icon-tile icon-tile--gold"><Icon name="hand-heart" size={24} /></span>
+        <h2>Prayer request</h2>
+        <p class="muted">Whatever you're facing, you don't have to face it alone. Our prayer team would be honoured to pray with you, and you can ask anonymously.</p>
+        <a class="btn btn--gold" href="/ministries/community/prayer">Submit a prayer request <Icon name="arrow-right" size={18} /></a>
+      </div>
+      <div class="card contact-panel" id="safeguarding">
+        <span class="icon-tile icon-tile--navy"><Icon name="shield" size={24} /></span>
+        <h2>Safeguarding contact</h2>
+        <p class="muted">If you are worried about the safety or wellbeing of a child or adult in connection with DCC, please contact our Safeguarding Lead in confidence.</p>
+        <p class="contact-panel__line"><Icon name="mail" size={16} /><a href={`mailto:${site.contact.email}?subject=Safeguarding%20concern`}>{site.contact.email}</a> (mark it "Safeguarding")</p>
+        <p class="contact-panel__line"><Icon name="phone" size={16} /><a href={`tel:${site.contact.phone}`}>{site.contact.phoneDisplay}</a></p>
+        <div class="notice" style="margin-top:14px">
+          <Icon name="triangle-alert" size={20} />
+          <p><strong>If someone is in immediate danger, call <a href="tel:999">999</a>.</strong> You can also call the NSPCC helpline on <a href="tel:08088005000">0808 800 5000</a>.</p>
+        </div>
+        <a class="link-arrow" href="/safeguarding" style="margin-top:14px">Our safeguarding policy <Icon name="arrow-right" size={15} /></a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Social media -->
+  {socials.length > 0 && (
+    <section class="section section--navy section--tight" aria-labelledby="follow-h">
+      <div class="container" style="text-align:center">
+        <h2 id="follow-h">Follow DCC</h2>
+        <p style="margin:0 auto 24px">Stay connected with services, events and encouragement through the week.</p>
+        <div class="contact-socials">
+          {socials.map((s) => (
+            <a href={s.url} target="_blank" rel="noopener">
+              <Icon name={s.key} size={24} />
+              <span><strong>{s.label}</strong>{s.handle}</span>
+              <span class="sr-only"> (opens in a new tab)</span>
+            </a>
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+</Base>

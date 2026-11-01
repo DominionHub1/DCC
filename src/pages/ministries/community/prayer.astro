@@ -1,0 +1,38 @@
+---
+import Base from '../../../layouts/Base.astro';
+import PageHero from '../../../components/PageHero.astro';
+import Field from '../../../components/Field.astro';
+import FormShell from '../../../components/FormShell.astro';
+import EmergencyNotice from '../../../components/EmergencyNotice.astro';
+---
+<Base title="Prayer Request" description="Send a prayer request to the Dominion Christian Connections prayer team. You can ask anonymously.">
+  <PageHero title="Need Prayer?" eyebrow="We'd be honoured to pray with you" lead="Whatever you're facing, you don't have to face it alone. Share your request and our prayer team will pray for you." crumbs={[{ href: '/ministries', label: 'Ministries' }, { href: '/ministries/community', label: 'Community' }]} />
+  <section class="section">
+    <div class="container grid grid-2" style="align-items:start">
+      <div class="prose">
+        <h2>How it works</h2>
+        <p>Your request goes only to DCC's authorised prayer team. It is never shared publicly or with other teams.</p>
+        <p>You can stay anonymous. If you'd like someone to get in touch, tick the follow-up box and leave a way to contact you.</p>
+        <blockquote class="card" style="padding:22px;margin:24px 0;border-left:4px solid var(--gold-500);border-radius:0 var(--radius) var(--radius) 0">
+          <p style="font-family:var(--font-head);font-weight:600;color:var(--ink);margin:0 0 6px">"Cast all your anxiety on Him because He cares for you."</p>
+          <cite class="muted" style="font-style:normal">1 Peter 5:7</cite>
+        </blockquote>
+        <EmergencyNotice />
+      </div>
+      <div class="card form-card">
+        <FormShell form="prayer" submit="Send prayer request" success="Thank you. Your prayer request has been received by our prayer team, and we will be praying for you." privacy="Your request is seen only by DCC's authorised prayer team and is handled in confidence.">
+          <label class="check"><input type="checkbox" name="anonymous" /> <span>Keep my request anonymous</span></label>
+          <div data-identity>
+            <Field id="pr-name" name="name" label="Your name" autocomplete="name" />
+          </div>
+          <Field id="pr-request" name="request" label="Your prayer request" as="textarea" required spokenName="your prayer request" />
+          <label class="check"><input type="checkbox" name="followUp" /> <span>I'd like someone from the prayer team to contact me</span></label>
+          <div class="form-row">
+            <Field id="pr-email" name="email" label="Email" type="email" autocomplete="email" />
+            <Field id="pr-phone" name="phone" label="Phone" type="tel" autocomplete="tel" />
+          </div>
+        </FormShell>
+      </div>
+    </div>
+  </section>
+</Base>

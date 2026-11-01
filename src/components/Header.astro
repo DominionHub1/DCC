@@ -1,0 +1,45 @@
+---
+import Icon from './Icon.astro';
+import Brand from './Brand.astro';
+
+export const navItems = [
+  { href: '/new-here', label: 'New Here' },
+  { href: '/about', label: 'About' },
+  { href: '/ministries', label: 'Ministries' },
+  { href: '/messages', label: 'Messages' },
+  { href: '/events', label: 'Events' },
+  { href: '/contact', label: 'Contact' },
+];
+
+const path = Astro.url.pathname.replace(/\/$/, '') || '/';
+const isActive = (href: string) => (href === '/' ? path === '/' : path === href || path.startsWith(href + '/'));
+---
+<header class="site-header" data-header>
+  <div class="container nav">
+    <Brand />
+    <nav aria-label="Main">
+      <ul class="nav__links">
+        {navItems.map((item) => (
+          <li><a href={item.href} aria-current={isActive(item.href) ? 'page' : undefined}>{item.label}</a></li>
+        ))}
+      </ul>
+    </nav>
+    <div class="nav__cta">
+      <a class="btn btn--outline btn--sm btn--give" href="/give">Give</a>
+      <button class="nav__toggle" type="button" aria-expanded="false" aria-controls="mobile-nav" data-nav-toggle>
+        <span class="sr-only">Menu</span>
+        <span data-icon-open><Icon name="menu" size={22} /></span>
+        <span data-icon-close hidden><Icon name="x" size={22} /></span>
+      </button>
+    </div>
+  </div>
+  <div class="mobile-nav" id="mobile-nav" data-mobile-nav>
+    <nav aria-label="Mobile">
+      <ul>
+        {[...navItems, { href: '/life-at-dcc', label: 'Life at DCC' }, { href: '/give', label: 'Give' }].map((item) => (
+          <li><a href={item.href} aria-current={isActive(item.href) ? 'page' : undefined}>{item.label}<Icon name="chevron-right" size={18} /></a></li>
+        ))}
+      </ul>
+    </nav>
+  </div>
+</header>

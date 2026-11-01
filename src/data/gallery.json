@@ -1,0 +1,154 @@
+[
+  {
+    "id": "worship-1",
+    "src": "/images/dsc_4658.jpg",
+    "alt": "Members of the congregation worshipping with eyes closed during a Sunday service",
+    "caption": "Sunday worship",
+    "album": "Worship",
+    "order": 1
+  },
+  {
+    "id": "praise-celebration",
+    "src": "/images/praise-celebration.jpg",
+    "alt": "Members of DCC dancing and celebrating in praise with tambourines and shakers",
+    "caption": "Joyful praise",
+    "album": "Worship",
+    "order": 2
+  },
+  {
+    "id": "fellowship-joy",
+    "src": "/images/fellowship-joy.jpg",
+    "alt": "Smiling members of DCC clapping and dancing together during a service",
+    "caption": "Family and fellowship",
+    "album": "Fellowship",
+    "order": 3
+  },
+  {
+    "id": "worship-singer",
+    "src": "/images/worship-singer.jpg",
+    "alt": "A DCC worship leader singing with eyes closed",
+    "caption": "Heartfelt worship",
+    "album": "Worship",
+    "order": 6
+  },
+  {
+    "id": "worship-women",
+    "src": "/images/worship-women.jpg",
+    "alt": "Women of DCC worshipping with eyes closed, one with her hand raised",
+    "caption": "In His presence",
+    "album": "Worship",
+    "order": 7
+  },
+  {
+    "id": "preaching-1",
+    "src": "/images/dsc_4803.jpg",
+    "alt": "A minister smiling and gesturing while preaching in front of the DCC stage banner",
+    "caption": "The Word",
+    "album": "Worship",
+    "order": 12
+  },
+  {
+    "id": "breakfast-1",
+    "src": "/images/dsc_0920.jpg",
+    "alt": "Volunteers in aprons and hairnets serving a hot breakfast",
+    "caption": "Breakfast Morning",
+    "album": "Outreach",
+    "order": 14
+  },
+  {
+    "id": "preaching-2",
+    "src": "/images/dsc_0893.jpg",
+    "alt": "A minister speaking into a microphone during a service",
+    "caption": "Teaching",
+    "album": "Worship",
+    "order": 15
+  },
+  {
+    "id": "celebration-praise",
+    "src": "/images/celebration-praise.jpg",
+    "alt": "The congregation celebrating joyfully in praise during a service",
+    "caption": "Celebration",
+    "album": "Worship",
+    "order": 16
+  },
+  {
+    "id": "worship-team",
+    "src": "/images/worship-team.jpg",
+    "alt": "The DCC worship team singing on stage, one playing guitar",
+    "caption": "Worship team",
+    "album": "Music",
+    "order": 17
+  },
+  {
+    "id": "worship-leader",
+    "src": "/images/worship-leader.jpg",
+    "alt": "A worship leader singing passionately, with a guitarist behind her",
+    "caption": "Leading worship",
+    "album": "Music",
+    "order": 18
+  },
+  {
+    "id": "lifting-his-name",
+    "src": "/images/lifting-his-name.jpg",
+    "alt": "A worship leader singing with the choir",
+    "caption": "Lifting His name",
+    "album": "Music",
+    "order": 19
+  },
+  {
+    "id": "singer-worship",
+    "src": "/images/singer-worship.jpg",
+    "alt": "A singer worshipping with eyes closed, alongside the choir",
+    "caption": "In worship",
+    "album": "Music",
+    "order": 20
+  },
+  {
+    "id": "vocal-group",
+    "src": "/images/vocal-group.jpg",
+    "alt": "Singers in denim jackets and hats performing together",
+    "caption": "Joyful harmony",
+    "album": "Music",
+    "order": 21
+  },
+  {
+    "id": "keyboardist",
+    "src": "/images/keyboardist.jpg",
+    "alt": "A DCC musician playing the keyboard",
+    "caption": "On the keys",
+    "album": "Music",
+    "order": 22
+  },
+  {
+    "id": "bassist",
+    "src": "/images/bassist.jpg",
+    "alt": "A DCC musician playing bass guitar",
+    "caption": "On the bass",
+    "album": "Music",
+    "order": 23
+  },
+  {
+    "id": "speaker-podium",
+    "src": "/images/speaker-podium.jpg",
+    "alt": "A member of DCC speaking at the podium in front of the DCC banner",
+    "caption": "At the podium",
+    "album": "Worship",
+    "order": 24
+  },
+  {
+    "id": "reading-podium",
+    "src": "/images/reading-podium.jpg",
+    "alt": "A member of DCC reading at the podium",
+    "caption": "Reading the Word",
+    "album": "Worship",
+    "order": 25
+  },
+  {
+    "id": "family-celebration",
+    "src": "/images/family-celebration.jpg",
+    "alt": "A smiling couple at the front of the church, the father holding their baby",
+    "caption": "Family celebration",
+    "album": "Fellowship",
+    "order": 26
+  }
+]

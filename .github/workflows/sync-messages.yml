@@ -1,0 +1,35 @@
+# Adds the latest services from DCC's YouTube channel to the Messages library every Sunday by 2pm UK time.
+# Committing the change triggers the host (e.g. Netlify) to rebuild and publish the site.
+name: Sync YouTube messages
+on:
+  schedule:
+    # GitHub runs schedules in UTC: 13:00 UTC = 2pm in summer (BST), 14:00 UTC = 2pm in winter (GMT).
+    - cron: '0 13 * * 0'
+    - cron: '0 14 * * 0'
+  workflow_dispatch: {}   # also lets someone run it by hand from the Actions tab
+permissions:
+  contents: write
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Only run at 2pm UK time
+        id: uk
+        run: echo "hour=$(TZ=Europe/London date +%H)" >> "$GITHUB_OUTPUT"
+      - uses: actions/checkout@v4
+        if: steps.uk.outputs.hour == '14' || github.event_name == 'workflow_dispatch'
+      - uses: actions/setup-node@v4
+        if: steps.uk.outputs.hour == '14' || github.event_name == 'workflow_dispatch'
+        with: { node-version: 22 }
+      - name: Fetch new services
+        if: steps.uk.outputs.hour == '14' || github.event_name == 'workflow_dispatch'
+        run: node scripts/sync-youtube.mjs
+      - name: Commit if anything changed
+        if: steps.uk.outputs.hour == '14' || github.event_name == 'workflow_dispatch'
+        run: |
+          if ! git diff --quiet src/data/messages.json; then
+            git config user.name "DCC website bot"
+            git config user.email "actions@users.noreply.github.com"
+            git commit -am "Add latest YouTube services"
+            git push
+          fi

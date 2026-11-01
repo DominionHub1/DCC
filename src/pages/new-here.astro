@@ -1,0 +1,205 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import Icon from '../components/Icon.astro';
+import SectionHead from '../components/SectionHead.astro';
+import Field from '../components/Field.astro';
+import FormShell from '../components/FormShell.astro';
+import site from '../data/site.json';
+import HeroVideo from '../components/HeroVideo.astro';
+import { getNextSunday, fmt } from '../lib/schedule';
+
+const next = await getNextSunday();
+const v = site.venue;
+const appleMaps = `https://maps.apple.com/?q=${encodeURIComponent(`${v.street}, ${v.city} ${v.postcode}`)}`;
+
+const steps = [
+  { key: 'Membership', icon: 'users', title: 'Become a member', text: 'Make DCC your church home. Membership is a commitment to belong, grow and serve together.' },
+  { key: 'Serve Class', icon: 'graduation-cap', title: 'Join Serve Class', text: 'Ready to get involved? Join our Serve Class to learn more about DCC and how you can serve.' },
+  { key: 'Serving', icon: 'hand-helping', title: 'Join a team', text: 'Use your gifts to serve, from welcome, media and music to children and community outreach.' },
+  { key: 'Connect group', icon: 'heart-handshake', title: 'Find your people', text: 'Connect with others in one of our ministries for men, women, youth and children.' },
+];
+
+// What a first-time visitor can expect on a Sunday.
+const expectations = [
+  { icon: 'hand', title: 'A warm welcome', text: 'Our Welcome Team will greet you at the door and help you find a seat.' },
+  { icon: 'music', title: 'Praise and worship', text: 'Joyful, heartfelt worship as we come together before God.' },
+  { icon: 'book-open', title: 'A Bible-based message', text: "Practical teaching from God's Word for everyday life." },
+  { icon: 'hand-heart', title: 'Prayer and ministry', text: 'Time to pray together, and to receive prayer if you would like it.' },
+  { icon: 'coffee', title: 'Fellowship afterwards', text: 'Stay for a chat and meet the DCC family.' },
+];
+
+const faqs = [
+  { q: 'How long is the service?', a: `Our ${site.service.name} starts at ${site.service.time} and lasts about two hours, including worship, prayer and the message.` },
+  { q: 'What is Thanksgiving Sunday?', a: 'On the first Sunday of each month we hold a Thanksgiving Service to celebrate God\'s goodness together. It\'s a joyful service, and a great one to visit!' },
+  { q: 'Is there something for my children?', a: 'Yes. Children\'s church runs during the service with Bible teaching and activities led by safeguarding-checked volunteers.' },
+  { q: 'Do I have to give money?', a: 'Giving is for those who consider DCC their church family. As our guest, please don\'t feel any pressure.' },
+  { q: 'What is RCCG?', a: 'DCC is a parish of the Redeemed Christian Church of God (RCCG), a worldwide Pentecostal church family. You can find out more on the RCCG UK website.' },
+];
+---
+<Base title="New Here: Plan Your Visit" description={`New to DCC? Plan your visit: ${site.service.name} every ${site.service.day} at ${site.service.time}, ${v.street}, ${v.city} ${v.postcode}. What to expect, children, parking, common questions and next steps.`}>
+  <PageHero title="THERE IS A PLACE HERE FOR YOU" image="/images/dsc_4658.jpg" video={site.newHereVideo} videoPauseControl={false} centered crumbs={[]}>
+    <span slot="title" class="nh-title" aria-hidden="true">
+      <span class="nh-title__lead"><span class="nh-title__rule"></span>There is a place<span class="nh-title__rule"></span></span>
+      <span class="nh-title__big">Here for <em>You</em></span>
+    </span>
+</PageHero>
+
+  <section class="section" id="expect" aria-labelledby="expect-h">
+    <div class="container split expect">
+      <div>
+        <p class="expect__meet">WE CAN'T WAIT TO MEET YOU!</p>
+        <h2 id="expect-h">WHAT TO EXPECT!</h2>
+        <p class="expect__lead">Whether you're new to Peterborough or looking for a church home, we'd love to get to know you.</p>
+        <ul class="expect-list">
+          {expectations.map((e) => (
+            <li>
+              <span class="expect-list__icon"><Icon name={e.icon} size={22} /></span>
+              <span><strong>{e.title}</strong>{e.text}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+      <div class="expect-video">
+        <img src="/images/praise-celebration.jpg" alt="" class="expect-video__poster" loading="lazy" />
+        <HeroVideo video={{ mp4: '/videos/new-here.mp4', vertical: true }} pauseControl={false} />
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--sky" id="service" aria-labelledby="service-h">
+    <div class="container split">
+      <div>
+        <h2 id="service-h">Join us this Sunday</h2>
+        <p class="muted">{site.service.summary}</p>
+        <div class="card" style="padding:24px;margin:24px 0">
+          <div class="meta" style="font-size:1rem;gap:12px">
+            <span><Icon name="calendar" size={20} /><strong>{site.service.name}</strong></span>
+            <span><Icon name="clock" size={20} />Every {site.service.day} at {site.service.time}</span>
+            {next && <span><Icon name="sparkles" size={20} />Next: {next.title}, {fmt.date(next.start)}</span>}
+            <span><Icon name="radio" size={20} /><span>Can't make it? <a href={site.social.youtubeLive} target="_blank" rel="noopener">Watch live on YouTube<span class="sr-only"> (opens in new tab)</span></a></span></span>
+          </div>
+        </div>
+        <a class="btn btn--gold" href="#tell-us">Let us know you're coming <Icon name="arrow-right" size={18} /></a>
+      </div>
+      <div class="split__media"><img src="/images/dsc_4803.jpg" alt="A minister preaching joyfully at a DCC Sunday service" loading="lazy" /></div>
+    </div>
+  </section>
+
+  <section class="section section--cream" id="location" aria-labelledby="location-h">
+    <div class="container">
+      <div class="plan-head" id="plan-your-visit">
+        <h2>Plan Your Visit</h2>
+        <p>Everything you need to know for your first Sunday at DCC</p>
+      </div>
+      <h3 id="location-h" class="plan-sub">Location &amp; Parking</h3>
+      <div class="grid grid-2">
+        <div class="card info-card">
+          <div class="icon-tile icon-tile--navy"><Icon name="map-pin" size={24} /></div>
+          <div>
+            <h3>Our address</h3>
+            <address class="address-block">{v.name}<br />{v.street}<br />{v.city}, {v.county}<br />{v.postcode}</address>
+            <div class="btn-row" style="margin-top:16px">
+              <a class="btn btn--sm" href={v.mapsUrl} target="_blank" rel="noopener"><Icon name="navigation" size={16} /> Google Maps</a>
+              <a class="btn btn--outline btn--sm" href={appleMaps} target="_blank" rel="noopener">Apple Maps</a>
+            </div>
+          </div>
+        </div>
+        <div class="card info-card">
+          <div class="icon-tile icon-tile--navy"><Icon name="car" size={24} /></div>
+          <div>
+            <h3>Parking</h3>
+            <p>{v.parking || 'Our Welcome Team can advise on the best places to park nearby. Call or email us before your visit and we will help you plan your journey.'}</p>
+            <p style="margin-top:12px"><a href={`tel:${site.contact.phone}`}>{site.contact.phoneDisplay}</a> · <a href={`mailto:${site.contact.email}`}>{site.contact.email}</a></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="kids-h">
+    <div class="container grid grid-2" style="align-items:start">
+      <div id="children">
+        <div class="eyebrow">Children</div>
+        <h2 id="kids-h">Bringing children?</h2>
+        <p class="muted">Children are a joyful part of our church family. Children's church runs during the service, with age-appropriate Bible teaching and activities led by trusted volunteers in line with our safeguarding policy.</p>
+        <p class="muted">On arrival, a member of our Welcome Team will introduce you to the children's team and explain how check-in and collection work.</p>
+        <a class="link-arrow" href="/ministries/children">About our Children's Ministry <Icon name="arrow-right" size={15} /></a>
+      </div>
+      <div id="accessibility">
+        <div class="eyebrow">Accessibility</div>
+        <h2>Accessibility</h2>
+        <p class="muted">{v.accessibility || 'We want everyone to be able to worship with us. If you have any access needs, whether mobility, hearing, sight or anything else, please let us know before your visit and our team will do all we can to help.'}</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--sky" aria-labelledby="faq-h">
+    <div class="container">
+      <SectionHead id="faq-h" title="Common questions" />
+      <div class="faq">
+        {faqs.map((f) => (
+          <details class="belief">
+            <summary>{f.q}<Icon name="chevron-down" size={18} class="chev" /></summary>
+            <p style="padding-left:18px">{f.a}</p>
+          </details>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="tell-us" aria-labelledby="form-h">
+    <div class="container" style="max-width:820px">
+      <div class="eyebrow">I'm planning to visit</div>
+      <h2 id="form-h">Let us know you're coming</h2>
+      <p class="muted">Tell us when you're planning to visit and someone from our Welcome Team will look out for you. It's completely optional.</p>
+      <div class="card form-card" style="margin-top:24px">
+        <FormShell form="visit" submit="Let us know" success="Thank you! We've received your details and our Welcome Team looks forward to meeting you." privacy="We'll only use these details so our Welcome Team can welcome you.">
+          <div class="form-row">
+            <Field id="visit-name" name="name" label="Your name" required autocomplete="name" spokenName="your name" />
+            <Field id="visit-email" name="email" label="Email" type="email" required autocomplete="email" spokenName="your email address" />
+          </div>
+          <div class="form-row">
+            <Field id="visit-phone" name="phone" label="Phone" type="tel" autocomplete="tel" />
+            <Field id="visit-date" name="date" label="When are you planning to visit?" type="date" />
+          </div>
+          <div class="form-row">
+            <Field id="visit-group" name="group" label="Who's coming?" as="select" options={['Just me', 'Me and a friend', 'My family (with children)', 'A group']} />
+          </div>
+          <Field id="visit-notes" name="notes" label="Anything we can help with?" as="textarea" hint="For example, access needs, children's ages or questions." />
+        </FormShell>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--cream" id="next-steps" aria-labelledby="steps-h">
+    <div class="container">
+      <SectionHead id="steps-h" title="Take your next step" eyebrow="Next steps" intro="Been with us a few times? Here's how to go deeper and get connected." />
+      <div class="grid grid-4">
+        {steps.map((s) => (
+          <div class="card give-option reveal">
+            <div class="icon-tile icon-tile--gold"><Icon name={s.icon} size={24} /></div>
+            <h3 style="margin:0">{s.title}</h3>
+            <p>{s.text}</p>
+            <a class="link-arrow" href={`/new-here?step=${encodeURIComponent(s.key)}#next-steps-form`}>I'm interested <Icon name="arrow-right" size={15} /></a>
+          </div>
+        ))}
+      </div>
+
+      <div class="card form-card" id="next-steps-form" style="margin-top:40px;max-width:820px">
+        <h3>Tell us about your next step</h3>
+        <p class="muted">Someone from the right team will get in touch with more information.</p>
+        <FormShell form="nextSteps" submit="Send" success="Thank you! We've received your details and the right team will be in touch.">
+          <Field id="step-type" name="step" label="I'm interested in" as="select" required preselect="step" options={steps.map((s) => s.key)} spokenName="what you're interested in" />
+          <div class="form-row">
+            <Field id="step-name" name="name" label="Your name" required autocomplete="name" spokenName="your name" />
+            <Field id="step-email" name="email" label="Email" type="email" required autocomplete="email" spokenName="your email address" />
+          </div>
+          <Field id="step-phone" name="phone" label="Phone" type="tel" autocomplete="tel" />
+          <Field id="step-message" name="message" label="Anything you'd like us to know?" as="textarea" />
+        </FormShell>
+      </div>
+    </div>
+  </section>
+
+</Base>

@@ -1,0 +1,96 @@
+{
+  "_comment": "Site-wide settings. Values marked TBC in README need church confirmation before launch.",
+  "name": "Dominion Christian Connections",
+  "shortName": "DCC",
+  "legalName": "The Redeemed Christian Church of God, Dominion Christian Connections",
+  "charityNumber": "1145233",
+  "tagline": "Connecting believers in Peterborough through faith and fellowship.",
+  "founded": 2007,
+  "url": "https://dominionconnections.org",
+
+  "service": {
+    "name": "Sunday Celebration Service",
+    "day": "Sunday",
+    "time": "10:05 AM",
+    "summary": "Worship, the Word, prayer and a welcoming family. Every first Sunday is our Thanksgiving Service."
+  },
+
+  "venue": {
+    "name": "RCCG Dominion Christian Connections",
+    "street": "36–38 Park Road",
+    "city": "Peterborough",
+    "county": "Cambridgeshire",
+    "postcode": "PE1 2TG",
+    "country": "United Kingdom",
+    "mapsUrl": "https://www.google.com/maps/search/?api=1&query=36-38+Park+Road+Peterborough+PE1+2TG",
+    "parking": "",
+    "accessibility": ""
+  },
+
+  "contact": {
+    "email": "admin@dominionhub.org.uk",
+    "phone": "+447884974536",
+    "phoneDisplay": "+44 7884 974536"
+  },
+
+  "social": {
+    "youtube": "https://www.youtube.com/@dominionchristianconnections",
+    "youtubeLive": "https://www.youtube.com/@dominionchristianconnections/streams",
+    "instagram": "https://www.instagram.com/rccg_dominionconnections",
+    "facebook": "https://www.facebook.com/dominion.christian",
+    "spotify": "https://open.spotify.com/playlist/7D4yKCZUw6cRsIrthMn0qz"
+  },
+
+  "giving": {
+    "bank": {
+      "bankName": "Barclays Bank",
+      "accountName": "RCCG Dominion Christian Connection",
+      "accountNumber": "13523780",
+      "sortCode": "20-67-40"
+    },
+    "options": [
+      { "label": "Tithe", "description": "Honour God with the first tenth of your increase.", "icon": "coins", "url": "https://buy.stripe.com/6oUfZgeKs03w2Sl2OJ43S00" },
+      { "label": "Offering", "description": "A freewill gift towards the work of the ministry.", "icon": "gift", "url": "https://buy.stripe.com/7sY00icCk9E6fF7blf43S02" },
+      { "label": "Breakfast Morning", "description": "Feed someone in need at our Saturday Breakfast Morning.", "icon": "coffee", "url": "https://buy.stripe.com/dRm5kCdGobMedwZ60V43S01" },
+      { "label": "Church Projects", "description": "Support building, equipment and mission projects.", "icon": "sprout", "url": "https://buy.stripe.com/00w9AS31KeYqfF71KF43S04" },
+      { "label": "Other", "description": "Seed, vows, pledges and any other giving.", "icon": "hand-heart", "url": "https://buy.stripe.com/5kQ14m6dW4jMgJb89343S03" }
+    ]
+  },
+
+  "forms": {
+    "_comment": "Where each form is delivered (US-ADM-04). deliverTo receives every form left blank below, by email via FormSubmit (no account needed; the very first submission sends a one-time activation email to that inbox, which must be confirmed). To route a form to a different team, put that team's email address next to it (e.g. \"prayer\": \"prayer@...\"). To use a form service instead (Formspree etc.), paste its https:// endpoint URL. If deliverTo is empty and a form is blank, the form shows an honest 'email us instead' message.",
+    "deliverTo": "admin@dominionhub.org.uk",
+    "contact": "",
+    "visit": "",
+    "ministry": "",
+    "nextSteps": "",
+    "prayer": "",
+    "support": "",
+    "volunteer": "",
+    "newsletter": ""
+  },
+
+  "heroVideo": {
+    "_comment": "Homepage hero background video. youtubeId plays muted and looped from YouTube (privacy-enhanced mode). Self-hosted file in public/videos/ (watermarks removed). Set mp4 to empty to show only the photo.",
+    "youtubeId": "",
+    "mp4": "/videos/home-hero.mp4",
+    "vertical": true,
+    "fit": "cover"
+  },
+
+  "newHereVideo": {
+    "_comment": "New Here page hero background video (a vertical YouTube Short, so it is cropped to fill the banner on wide screens).",
+    "youtubeId": "",
+    "mp4": "/videos/new-here.mp4",
+    "vertical": true
+  },
+
+  "communityVideo": {
+    "_comment": "Community page hero background (Breakfast Morning 'Domi Cafe' Short). No pause control, so YouTube's title/channel overlay never appears.",
+    "youtubeId": "",
+    "mp4": "/videos/community.mp4",
+    "vertical": true
+  },
+
+  "rccgUrl": "https://rccguk.church"
+}

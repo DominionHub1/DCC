@@ -1,0 +1,118 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import Icon from '../../components/Icon.astro';
+import ThemeHero from '../../components/ThemeHero.astro';
+import season from '../../data/season.json';
+import site from '../../data/site.json';
+import { getSeasonEvents, fmt, ukTime } from '../../lib/schedule';
+
+const events = await getSeasonEvents(season.start, season.end);
+const dayOrder = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+const regular = (await getCollection('schedule', ({ data }) => !data.draft && !data.replaces))
+  .sort((a, b) => dayOrder.indexOf(a.data.day) - dayOrder.indexOf(b.data.day) || (a.data.time ?? '99').localeCompare(b.data.time ?? '99'));
+
+// One chapter per month ("DCC in October"), with that month's theme and banner from season.json.
+const ymOf = (d: Date) => d.toLocaleDateString('en-CA', { year: 'numeric', month: '2-digit', timeZone: 'Europe/London' }).slice(0, 7);
+type Month = { month: string; name: string; theme?: string; image?: string; imageAlt?: string };
+const chapters = (season.months as Month[]).map((m) => ({
+  ...m, id: m.name.toLowerCase(), year: m.month.slice(0, 4),
+  events: events.filter((o) => ymOf(o.start) === m.month),
+})).filter((c) => c.events.length > 0);
+const categoryIcon: Record<string, string> = {
+  Worship: 'music', Prayer: 'hand-heart', Fellowship: 'users', Outreach: 'hand-helping',
+  Youth: 'rocket', Children: 'baby', Teaching: 'book-open', Special: 'sparkles',
+};
+---
+<Base title="Events" description={`Upcoming services and special events at Dominion Christian Connections, Peterborough. ${season.intro}`}>
+  <ThemeHero title="Upcoming Events" lead="Services, classes, outreach and special gatherings at DCC over the coming weeks." />
+
+  <section class="section section--tight">
+    <div class="container season__head">
+      <h2>{season.sectionTitle}</h2>
+      <p class="season__intro">{season.intro}</p>
+      <nav class="dcc-month-nav" aria-label="Jump to month">
+        {chapters.map((c) => <a href={`#${c.id}`} data-month-link={c.id}>DCC in {c.name}</a>)}
+      </nav>
+    </div>
+  </section>
+
+  {chapters.map((c, ci) => (
+    <section class:list={['dcc-month', ci % 2 === 1 && 'dcc-month--alt']} id={c.id} aria-labelledby={`${c.id}-h`} data-month-section>
+      <div class="container dcc-month__grid">
+        <header class="dcc-month__head">
+          <p class="dcc-month__eyebrow">{c.name} {c.year}</p>
+          <h2 id={`${c.id}-h`}>DCC in {c.name}</h2>
+          {c.theme && <p class="dcc-month__theme"><Icon name="sparkles" size={16} />{c.theme}</p>}
+          <p class="dcc-month__count">{c.events.length} special {c.events.length === 1 ? 'gathering' : 'gatherings'}</p>
+          {c.image && <img class="dcc-month__banner" src={c.image} alt={c.imageAlt ?? ''} loading="lazy" />}
+        </header>
+        <ol class="dcc-month__list">
+          {c.events.map((o) => (
+            <li data-item data-expires={o.end.toISOString()}>
+              <a class="dcc-event" href={o.href}>
+                <span class="dcc-event__date" aria-hidden="true"><b>{fmt.day(o.start)}</b><span>{fmt.weekday(o.start).slice(0, 3)}</span></span>
+                <span class="dcc-event__body">
+                  <span class="dcc-event__title">{o.title}</span>
+                  <span class="dcc-event__meta">
+                    <span class="sr-only">{fmt.date(o.start)}, </span>
+                    <span><Icon name="clock" size={14} />{o.hasTime ? fmt.time(o.start) : o.timeLabel}</span>
+                    <span><Icon name={o.online ? 'radio' : 'map-pin'} size={14} />{o.location}</span>
+                  </span>
+                  <span class="dcc-event__tags">
+                    <span class="pill">{o.category}</span>
+                    {o.audience && <span class="pill pill--gold">{o.audience}</span>}
+                  </span>
+                </span>
+                <Icon name="arrow-right" size={20} class="dcc-event__arrow" />
+              </a>
+            </li>
+          ))}
+        </ol>
+      </div>
+    </section>
+  ))}
+
+  {events.length === 0 && (
+    <section class="section"><div class="container"><div class="empty-state">
+      <Icon name="calendar" size={30} />
+      <h3 style="margin:0 0 6px">This season&#39;s events are coming soon</h3>
+      <p style="margin:0">Check back shortly, and in the meantime join us every Sunday at {site.service.time}.</p>
+    </div></div></section>
+  )}
+
+  {regular.length > 0 && (
+    <section class="section section--sky section--tight" aria-labelledby="every-week">
+      <div class="container">
+        <h2 id="every-week" style="font-size:1.6rem">Every week at DCC</h2>
+        <p class="muted">Alongside our special events, these gatherings happen all season long.</p>
+        <div class="grid grid-3" style="margin-top:20px">
+          {regular.map((r) => (
+            <div class="card info-card">
+              <div class="icon-tile icon-tile--navy"><Icon name={categoryIcon[r.data.category] ?? 'calendar'} size={22} /></div>
+              <div>
+                <h3 style="font-size:1.05rem">{r.data.title}</h3>
+                <p>{r.data.time
+                  ? `${r.data.day}s at ${fmt.time(ukTime(`2026-01-01T${r.data.time}`))}`
+                  : r.data.timeLabel?.includes(r.data.day) ? r.data.timeLabel : `${r.data.day}s${r.data.timeLabel ? ` · ${r.data.timeLabel}` : ''}`}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+</Base>
+
+<script>
+  // Hide a month chapter (and its jump link) once all its events have finished.
+  document.querySelectorAll<HTMLElement>('[data-month-section]').forEach((sec) => {
+    const left = [...sec.querySelectorAll<HTMLElement>('[data-item]')].filter((i) => Date.parse(i.dataset.expires!) > Date.now()).length;
+    const live = left > 0;
+    const count = sec.querySelector('.dcc-month__count');
+    if (count) count.textContent = `${left} special ${left === 1 ? 'gathering' : 'gatherings'}`;
+    sec.hidden = !live;
+    const link = document.querySelector<HTMLElement>(`[data-month-link="${sec.id}"]`);
+    if (link) link.hidden = !live;
+  });
+</script>

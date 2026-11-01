@@ -1,0 +1,69 @@
+# DCC Content Manager (Decap CMS). Edits are saved as commits to the site's Git repository,
+# which triggers a rebuild. Locally: run `npx decap-server`, then open http://localhost:4321/admin/
+backend:
+  name: git-gateway        # TBC with hosting choice (Netlify Identity/Git Gateway, or `github` with OAuth)
+  branch: main
+local_backend: true
+
+publish_mode: editorial_workflow   # Draft → In review → Ready, before anything goes live
+media_folder: public/images
+public_folder: /images
+site_url: https://dominionconnections.org
+
+collections:
+  - name: themes
+    label: Annual Themes
+    label_singular: Annual Theme
+    description: >
+      The church's theme for each year. A theme appears on the homepage and at /theme only while it is
+      Published and today falls between its Active from and Active until dates. You can prepare next
+      year's theme in advance; it switches over automatically on its start date. Archived themes are never shown as current.
+    folder: src/content/themes
+    create: true
+    slug: "{{fields.year}}-{{slug}}"
+    extension: md
+    format: frontmatter
+    media_folder: images
+    public_folder: ./images
+    summary: "{{fields.year}}: {{fields.title}} ({{fields.status}})"
+    sortable_fields: [year, title, status]
+    fields:
+      - { name: year, label: Year, widget: number, value_type: int, min: 2000, max: 2100 }
+      - { name: title, label: Theme title, widget: string, hint: "e.g. Our Year of Shining Light" }
+      - { name: scripture, label: Scripture reference, widget: string, hint: "e.g. Matthew 4:1–18" }
+      - { name: scriptureUrl, label: Scripture link, widget: string, required: false, pattern: ['^https?://', 'Must be a full web address'], hint: "Optional link to the passage online" }
+      - { name: artwork, label: Official artwork, widget: image, choose_url: false, hint: "Upload the official theme artwork exactly as designed" }
+      - { name: artworkAlt, label: Artwork description (for screen readers), widget: string, hint: "Describe what the artwork shows and the words on it" }
+      - { name: description, label: Short description, widget: text, required: false, default: "", hint: "1–2 church-approved sentences. Leave empty and a marked placeholder shows until approved." }
+      - { name: status, label: Status, widget: select, default: draft, options: [{ label: "Draft (hidden)", value: draft }, { label: "Published", value: published }, { label: "Archived", value: archived }] }
+      - { name: activeFrom, label: Active from, widget: datetime, format: YYYY-MM-DD, date_format: YYYY-MM-DD, time_format: false }
+      - { name: activeUntil, label: Active until (inclusive), widget: datetime, format: YYYY-MM-DD, date_format: YYYY-MM-DD, time_format: false }
+      - { name: body, label: "Pastor's message", widget: markdown, required: false, hint: "Leave empty until DCC provides the approved message; a marked placeholder shows instead." }
+
+  - name: events
+    label: Events
+    folder: src/content/events
+    create: true
+    slug: "{{slug}}"
+    extension: md
+    format: frontmatter
+    summary: "{{start}}: {{title}}"
+    fields:
+      - { name: title, label: Title, widget: string }
+      - { name: summary, label: Card summary, widget: text }
+      - { name: category, label: Category, widget: select, options: [Worship, Prayer, Fellowship, Outreach, Youth, Children, Teaching, Special] }
+      - { name: start, label: Starts (UK time), widget: datetime, format: "YYYY-MM-DDTHH:mm", date_format: DD/MM/YYYY, time_format: HH:mm }
+      - { name: end, label: Ends (UK time), widget: datetime, required: false, format: "YYYY-MM-DDTHH:mm", date_format: DD/MM/YYYY, time_format: HH:mm }
+      - { name: timeTBC, label: Time to be confirmed, widget: boolean, default: false }
+      - { name: location, label: Location, widget: string }
+      - { name: online, label: Online event, widget: boolean, default: false }
+      - { name: registrationUrl, label: Registration link, widget: string, required: false }
+      - { name: image, label: Image, widget: image, required: false }
+      - { name: imageAlt, label: Image description, widget: string, required: false }
+      - { name: poster, label: Image is a flyer (show whole), widget: boolean, default: false }
+      - { name: featured, label: Featured, widget: boolean, default: false }
+      - { name: audience, label: Audience (if not everyone), widget: string, required: false }
+      - { name: replaces, label: Replaces regular activity, widget: select, required: false, options: [{ label: "Sunday service", value: sunday-service }, { label: "Thanksgiving service", value: thanksgiving-service }, { label: "Word Encounter (Wed)", value: discipleship-class }, { label: "Shiloh Hour (Fri)", value: prayer-meeting }, { label: "Evangelism (Sat)", value: evangelism }, { label: "Breakfast Morning (Sat)", value: breakfast-morning }], hint: "If this event takes the place of a regular weekly activity on its date" }
+      - { name: theme, label: Annual Theme, widget: relation, collection: themes, value_field: "{{slug}}", search_fields: [title, year], display_fields: [year, title], required: false, hint: "Link this event to a theme to list it on the theme page" }
+      - { name: draft, label: Hide (draft), widget: boolean, default: false }
+      - { name: body, label: Full description, widget: markdown, required: false }

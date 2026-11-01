@@ -1,0 +1,3 @@
+[
+  { "id": "example", "quote": "Example testimony. Only shown when approved AND consentRecorded are both true.", "name": "Member, DCC", "approved": false, "consentRecorded": false }
+]

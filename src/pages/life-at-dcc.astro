@@ -1,0 +1,57 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import Icon from '../components/Icon.astro';
+import site from '../data/site.json';
+
+const photos = (await getCollection('gallery', ({ data }) => !data.draft)).sort((a, b) => a.data.order - b.data.order);
+const albums = [...new Set(photos.map((p) => p.data.album))];
+---
+<Base title="Life at DCC" description="Photos from worship, outreach and church life at Dominion Christian Connections, Peterborough.">
+  <PageHero title="Life at DCC" eyebrow="Gallery" lead="Church isn't something we attend. It's a family we belong to. Here's a glimpse of life together." crumbs={[]} />
+  <section class="section">
+    <div class="container">
+      {photos.length === 0 ? (
+        <div class="empty-state"><Icon name="image" size={28} /><p style="margin:0">New photos are coming soon.</p></div>
+      ) : (
+        <>
+          {albums.length > 1 && (
+            <div class="tabs" role="group" aria-label="Filter photos by album" data-album-filter>
+              <button class="tab" type="button" aria-pressed="true" data-album="">All</button>
+              {albums.map((a) => <button class="tab" type="button" aria-pressed="false" data-album={a}>{a}</button>)}
+            </div>
+          )}
+          <div class="gallery-grid">
+            {photos.map((p) => (
+              <figure data-album={p.data.album}>
+                <button type="button" data-lightbox={p.data.src} data-alt={p.data.alt} data-caption={p.data.caption} aria-label={`Enlarge photo: ${p.data.alt}`}>
+                  <img src={p.data.src} alt={p.data.alt} loading="lazy" />
+                </button>
+                {p.data.caption && <figcaption>{p.data.caption}</figcaption>}
+              </figure>
+            ))}
+          </div>
+        </>
+      )}
+      {site.social.instagram && (
+        <div class="notice notice--info" style="margin-top:40px">
+          <Icon name="instagram" size={20} />
+          <p>See more moments from DCC on <a href={site.social.instagram} target="_blank" rel="noopener">Instagram @rccg_dominionconnections</a>.</p>
+        </div>
+      )}
+    </div>
+  </section>
+</Base>
+
+<script>
+  const bar = document.querySelector<HTMLElement>('[data-album-filter]');
+  bar?.addEventListener('click', (e) => {
+    const btn = (e.target as HTMLElement).closest<HTMLButtonElement>('[data-album]');
+    if (!btn) return;
+    bar.querySelectorAll('[data-album]').forEach((b) => b.setAttribute('aria-pressed', String(b === btn)));
+    document.querySelectorAll<HTMLElement>('.gallery-grid > figure').forEach((f) => {
+      f.hidden = !!btn.dataset.album && f.dataset.album !== btn.dataset.album;
+    });
+  });
+</script>

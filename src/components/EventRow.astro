@@ -1,0 +1,22 @@
+---
+import Icon from './Icon.astro';
+import { fmt, type Occurrence } from '../lib/schedule';
+interface Props { o: Occurrence; headingLevel?: 'h3' | 'h4'; skip?: boolean }
+const { o, headingLevel: H = 'h3', skip = false } = Astro.props;
+const cta = o.registrationUrl ? 'Register' : o.online ? 'Join online' : 'Learn more';
+---
+<a class="event-row" href={o.href} target={o.external ? '_blank' : undefined} rel={o.external ? 'noopener' : undefined}
+   data-item data-key={o.key} data-skip={skip ? '' : undefined} hidden={skip} data-expires={o.end.toISOString()} data-start={o.start.toISOString()}>
+  <div class="date-badge" aria-hidden="true"><b>{fmt.day(o.start)}</b><span>{fmt.month(o.start)}</span></div>
+  <div>
+    <span class="pill">{o.category}</span>
+    <H>{o.title}</H>
+    <div class="meta">
+      <span><Icon name="calendar" size={15} />{fmt.date(o.start)}</span>
+      <span><Icon name="clock" size={15} />{o.hasTime ? fmt.time(o.start) : o.timeLabel}</span>
+      <span><Icon name={o.online ? 'radio' : 'map-pin'} size={15} />{o.location}</span>
+      {o.audience && <span><Icon name="users" size={15} />{o.audience}</span>}
+    </div>
+    <span class="event-row__cta">{cta}<Icon name="arrow-right" size={15} /></span>
+  </div>
+</a>

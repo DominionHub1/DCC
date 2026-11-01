@@ -1,0 +1,17 @@
+---
+// Background video for a hero banner, plus its pause control. The hero's photo shows until the video is
+// playing (see setupHeroVideo in scripts/site.ts). `vertical` = a 9:16 video such as a YouTube Short.
+// `fit: 'contain'` shows the whole video uncropped (a blurred copy fills the rest of the banner).
+export interface HeroVideoConfig { youtubeId?: string; mp4?: string; vertical?: boolean; fit?: string }
+interface Props { video?: HeroVideoConfig; pauseControl?: boolean }
+const { video, pauseControl = true } = Astro.props;
+const has = !!(video?.youtubeId || video?.mp4);
+---
+{has && (
+  <>
+    <div class:list={['hero__video', video!.vertical && 'hero__video--vertical', video!.fit === 'contain' && 'hero__video--contain']} data-fit={video!.fit ?? 'cover'} data-hero-video data-youtube={video!.youtubeId || undefined} data-mp4={video!.mp4 || undefined} aria-hidden="true"></div>
+    {pauseControl && <button class="hero__video-toggle" type="button" data-hero-video-toggle hidden aria-pressed="false">
+      <span data-label>Pause background video</span>
+    </button>}
+  </>
+)}

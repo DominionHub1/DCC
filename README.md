@@ -87,12 +87,14 @@ The `_sample-*.md` files are preview-only examples: they show on `npm run dev` w
 
 ## Going live: checklist
 
-1. **Hosting.** Deploy to Netlify, Cloudflare Pages or Vercel (all free for a site this size). Build command `npm run build`, output folder `dist`. Point `dominionconnections.org` at it. HTTPS is automatic.
+1. **Hosting (GitHub Pages, set up).** `.github/workflows/deploy.yml` builds, tests and publishes the site on every push to `main`, after the Sunday YouTube sync, and once a day (so dates and "This Week" stay current). One-time step: in the repo go to **Settings → Pages → Source** and choose **GitHub Actions**. The site is then live at `https://dominionhub1.github.io/DCC/` (`scripts/apply-base-path.mjs` adjusts links for that `/DCC` sub-folder). To use `dominionconnections.org` instead, enter it under Settings → Pages → Custom domain and point the domain's DNS at GitHub Pages; links then need no adjustment and the script does nothing.
+   Alternatively, deploy to Netlify, Cloudflare Pages or Vercel (all free for a site this size). Build command `npm run build`, output folder `dist`. Point `dominionconnections.org` at it. HTTPS is automatic.
 2. **Daily rebuild.** Add a scheduled build hook (once a day, early morning) so dates, "This Week" and the latest message stay current.
-3. **Forms.** Create one form endpoint per team (for example [Formspree](https://formspree.io), free tier) and paste the URLs into `site.json → forms`:
-   `visit` → Welcome Team, `ministry` / `nextSteps` → ministry leads, `prayer` → prayer team **only**,
-   `support` → pastoral/community team, `volunteer` → outreach, `newsletter` → your mailing list.
-   Until filled in, forms show an honest "email us instead" message.
+3. **Forms.** Forms already work: every form is emailed to `site.json → forms.deliverTo` (currently admin@dominionhub.org.uk) through [FormSubmit](https://formsubmit.co), which needs no account.
+   - **Activate it once:** after the site is live, send any form yourself. FormSubmit emails an activation link to that inbox. Click it, and every form after that is delivered. Until it's activated, visitors see an honest "not sent, please email us" message, never a false success.
+   - **Route a form to a team:** put that team's email address next to the form in `site.json → forms` (e.g. `"prayer": "prayer-team@..."`). Each new address needs its own one-time activation.
+   - **Use another service instead:** paste its `https://` endpoint URL (Formspree, a Netlify function…) next to the form. It receives the fields as JSON.
+   - Each email has a clear subject ("Website: new prayer request (confidential)" etc.), the visitor's address as reply-to, and the page it came from. Anonymous prayer requests never include the name.
 4. **CMS.** For staff editing without code (spec module 08), connect a headless CMS such as Decap CMS (free, Git-based) or Sanity (roles, drafts, scheduling) to the files above.
 
 ## To confirm before launch (TBC)
@@ -103,8 +105,10 @@ The `_sample-*.md` files are preview-only examples: they show on `npm run dev` w
 - [ ] Parking and accessibility wording (`site.json → venue`).
 - [x] Breakfast Morning: Saturdays 8:00–10:00 AM (from the "Domi Cafe" video). All other activities run about 2 hours.
 - [ ] Facebook page URL (left blank, so no icon shows).
-- [ ] Pastor and leadership names, photos and bios (`leaders.json`).
+- [ ] Pastor and leadership names, photos and bios (`leaders.json`). Leaders without a name are hidden on the live site (shown on `npm run dev` only).
 - [ ] Ministry meeting times and contacts; safeguarding-approved wording for Children's Ministry.
 - [ ] Speaker names for messages (`messages.json`); the date of the October midweek message.
 - [ ] Privacy, Safeguarding and Cookies pages need trustee approval (they carry a "draft" notice).
+- [ ] Prayer requests go to the admin inbox until a prayer-team address is set in `site.json → forms.prayer` (the prayer page promises only the prayer team sees them).
+- [ ] Activate FormSubmit for the admin inbox (see "Forms" above).
 - [ ] More approved photos, especially for Women, Youth and Children (only consented images of children).
