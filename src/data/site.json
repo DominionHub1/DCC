@@ -73,7 +73,7 @@
 
   "forms": {
     "_comment": "Jotform form for each part of the website. Paste the form's ID (e.g. 251234567890123) or its full link (e.g. https://form.jotform.com/251234567890123; use the full link for EU-hosted forms). Jotform delivers submissions and email notifications. Leave blank and that page shows 'email or call us' instead. The same form can be reused for several entries. See README → Forms for the fields each form needs.",
-    "contact": "",
+    "contact": "263043473673055",
     "visit": "",
     "ministry": "",
     "nextSteps": "",
