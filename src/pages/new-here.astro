@@ -12,11 +12,13 @@ const next = await getNextSunday();
 const v = site.venue;
 const appleMaps = `https://maps.apple.com/?q=${encodeURIComponent(`${v.street}, ${v.city} ${v.postcode}`)}`;
 
+// `option` is the matching tick-box in the Jotform Next Step form (site.json → forms.nextSteps), copied exactly,
+// so "I'm interested" ticks it for the visitor. Leave it out if the form has no matching option.
 const steps = [
   { key: 'Membership', icon: 'users', title: 'Become a member', text: 'Make DCC your church home. Membership is a commitment to belong, grow and serve together.' },
-  { key: 'Serve Class', icon: 'graduation-cap', title: 'Join Serve Class', text: 'Ready to get involved? Join our Serve Class to learn more about DCC and how you can serve.' },
-  { key: 'Serving', icon: 'hand-helping', title: 'Join a team', text: 'Use your gifts to serve, from welcome, media and music to children and community outreach.' },
-  { key: 'Connect group', icon: 'heart-handshake', title: 'Find your people', text: 'Connect with others in one of our ministries for men, women, youth and children.' },
+  { key: 'Serve Class', option: 'Join Serve Class', icon: 'graduation-cap', title: 'Join Serve Class', text: 'Ready to get involved? Join our Serve Class to learn more about DCC and how you can serve.' },
+  { key: 'Serving', option: 'Join a Team', icon: 'hand-helping', title: 'Join a team', text: 'Use your gifts to serve, from welcome, media and music to children and community outreach.' },
+  { key: 'Connect group', option: 'Find my member. Connect with other members in our minisstries', icon: 'heart-handshake', title: 'Find your people', text: 'Connect with others in one of our ministries for men, women, youth and children.' },
 ];
 
 // What a first-time visitor can expect on a Sunday.
@@ -167,7 +169,7 @@ const faqs = [
             <div class="icon-tile icon-tile--gold"><Icon name={s.icon} size={24} /></div>
             <h3 style="margin:0">{s.title}</h3>
             <p>{s.text}</p>
-            <a class="link-arrow" href={`/new-here?step=${encodeURIComponent(s.key)}#next-steps-form`}>I'm interested <Icon name="arrow-right" size={15} /></a>
+            <a class="link-arrow" href={s.option ? `/new-here?step=${encodeURIComponent(s.option)}#next-steps-form` : '/new-here#next-steps-form'}>I'm interested <Icon name="arrow-right" size={15} /></a>
           </div>
         ))}
       </div>
@@ -175,7 +177,7 @@ const faqs = [
       <div class="card form-card" id="next-steps-form" style="margin-top:40px;max-width:820px">
         <h3>Tell us about your next step</h3>
         <p class="muted">Someone from the right team will get in touch with more information.</p>
-        <FormShell form="nextSteps" title="Next steps form" />
+        <FormShell form="nextSteps" title="Next steps form" forward={{ step: 'q2_checkbox0' }} />
       </div>
     </div>
   </section>
